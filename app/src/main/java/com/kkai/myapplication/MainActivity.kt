@@ -20,12 +20,15 @@ import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import org.jsoup.Jsoup
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 private val client = OkHttpClient()
 const val linesUrl = "https://itranvias.com/queryitr_v3.php?func=1"
@@ -43,29 +46,53 @@ class MainActivity : AppCompatActivity() {
         bSubLabel = findViewById(R.id.bSubLabel)
 
         CoroutineScope(Dispatchers.Main).launch {
-            bMainLabel.text = getLeastTime("251").toString()
+            val least = getLeastTime("251")?.toInt()
+            bMainLabel.text = least.toString()
+            if (least != null) {
+                when {
+                    least < 6 -> bSubLabel.text = "No te da bro"
+                    least in 6 until 10 -> bSubLabel.text = "Corre"
+                    least >= 10 -> bSubLabel.text = "Chill bro"
+                }
+            } else {
+                bSubLabel.text = "OMG!"
+            }
         }
     }
 }
 
-@OptIn(ExperimentalSerializationApi::class)
-suspend fun apiQuery(url: String): Any? = withContext(Dispatchers.IO) {
-    val connection = URL(url).openConnection() as HttpURLConnection
-    val json = Json { isLenient = true; ignoreUnknownKeys = true }
-    connection.requestMethod = "GET"
-    connection.connect()
+suspend fun apiQuery(url: String): Any? = suspendCoroutine { continuation ->
+    val request = Request.Builder()
+        .url(url)
+        .build()
 
-    if (connection.responseCode == 200) {
-        val data = connection.inputStream.bufferedReader().use { it.readText() }
-        val obj = json.decodeFromString<Map<String, Any>>(data)
-        println(obj)
-    } else {
-        null
-    }
+    client.newCall(request).enqueue(object : Callback {
+        override fun onFailure(call: Call, e: IOException) {
+            e.printStackTrace()
+            continuation.resume(null) // Resume with null in case of failure
+        }
+
+        override fun onResponse(call: Call, response: Response) {
+            response.use {
+                if (!response.isSuccessful) {
+                    continuation.resume(null) // Resume with null in case of non-successful response
+                } else {
+                    continuation.resume(response.body!!.string()) // Resume with the response body
+                }
+            }
+        }
+    })
 }
 
-suspend fun getLeastTime(stop: String): Any? {
-    val timeq = apiQuery("$timeUrl$stop&func=0")
-    println(timeq)
-    return timeq
+@OptIn(ExperimentalSerializationApi::class)
+suspend fun getLeastTime(stop: String): String? {
+    val data = apiQuery("$timeUrl$stop&func=0").toString()
+    val obj = JSONObject(data)
+        .getJSONObject("buses")
+        .getJSONArray("lineas")
+        .getJSONObject(0)
+        .getJSONArray("buses")
+        .getJSONObject(0)
+        .getString("tiempo")
+    return obj
 }

@@ -8,17 +8,16 @@
 
     <TextView
         android:id="@+id/bMainLabel"
-        android:layout_width="296dp"
-        android:layout_height="280dp"
+        android:layout_width="295dp"
+        android:layout_height="232dp"
         android:fontFamily="@font/mont"
         android:textAlignment="center"
         android:textSize="196sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.454"
+        app:layout_constraintVertical_bias="0.445"
         tools:text="s" />
 
     <TextView
@@ -26,8 +25,11 @@
         android:layout_width="228dp"
         android:layout_height="63dp"
         android:layout_marginBottom="164dp"
+        android:fontFamily="sans-serif"
         android:textAlignment="center"
         android:textSize="20sp"
+        android:textStyle="bold"
+        android:typeface="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
