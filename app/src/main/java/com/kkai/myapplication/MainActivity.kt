@@ -28,6 +28,7 @@ import okhttp3.Request
 import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONObject
+import org.json.JSONException
 import java.net.HttpURLConnection
 import java.net.URL
 import java.time.LocalDateTime
@@ -35,6 +36,8 @@ import java.time.format.DateTimeFormatter
 import org.jsoup.Jsoup
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+
+import com.kkai.myapplication.stopName
 
 private val client = OkHttpClient()
 
@@ -45,6 +48,7 @@ const val stopUrl = "https://itranvias.com/queryitr_v3.php?&dato=20160101T00322_
 class MainActivity : AppCompatActivity() {
     private lateinit var bMainLabel: TextView
     private lateinit var bSubLabel: TextView
+    private lateinit var bStopLabel: TextView
     private lateinit var bTimerLabel: TextView
     private lateinit var bTextInput: TextInputEditText
 
@@ -58,6 +62,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         bMainLabel = findViewById(R.id.bMainLabel)
         bSubLabel = findViewById(R.id.bSubLabel)
+        bStopLabel = findViewById(R.id.bStopLabel)
         bTimerLabel = findViewById(R.id.bTimerLabel)
         bTextInput = findViewById(R.id.bTextInput)
 
@@ -65,7 +70,12 @@ class MainActivity : AppCompatActivity() {
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN) {
                 // Acción a realizar cuando se presiona "Enter"
                 val inputValue = bTextInput.text.toString()
-                println(inputValue)
+                if (inputValue == "666") {
+                    bStopLabel.text = "Hi otema666 LOL"
+                } else {
+                    bStopLabel.text = stopName(inputValue)
+                }
+                getTime(inputValue)
                 startCountdownTimer(updateDelay, inputValue)
                 // Realizar acciones con 'least'
                 true // Indica que el evento ha sido manejado
@@ -73,9 +83,8 @@ class MainActivity : AppCompatActivity() {
                 false // Indica que el evento no ha sido manejado
             }
         })
-
         startCountdownTimer(updateDelay, "251")
-
+        bStopLabel.text = stopName("251")
     }
 
     private fun startCountdownTimer(millisInFuture: Long, number: String) {
@@ -92,10 +101,6 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onFinish() {
                     bTimerLabel.text = "Actualizando..."
-                    if (firstExecution) {
-                        firstExecution = false
-                        getTime(number)
-                    }
                     isTimerRunning = false
                     startCountdownTimer(updateDelay, number)
                 }
@@ -108,16 +113,24 @@ class MainActivity : AppCompatActivity() {
     fun getTime(number: String) {
         CoroutineScope(Dispatchers.Main).launch {
             val least = getLeastTime(number)
+
             bMainLabel.text = least.toString()
-            if (least?.toString() != "<1") {
-                val lnum = least?.toInt()
-                if (lnum != null) {
-                    when {
-                        lnum < 6 -> bSubLabel.text = "No te da tiempo"
-                        lnum in 6 until 10 -> bSubLabel.text = "Corre"
-                        lnum >= 10 -> bSubLabel.text = "Chill"
+
+            if (least.toString() != "<1" || least.toString() != "0" || least.toString() != "?") {
+                try {
+                    val lnum = least?.toInt()
+                    if (lnum != null) {
+                        when {
+                            lnum < 6 -> bSubLabel.text = "No da tiempo bro"
+                            lnum in 6 until 10 -> bSubLabel.text = "Corre"
+                            lnum >= 10 -> bSubLabel.text = "Chill!"
+                        }
                     }
+                } catch (e: NumberFormatException) {
+                    bSubLabel.text = "No hay buses a esta hora"
                 }
+            } else if (least.toString() == "?") {
+                bSubLabel.text = "No hay buses a esta hora"
             } else {
                 bSubLabel.text = "OMG!"
             }
@@ -134,11 +147,13 @@ suspend fun apiQuery(url: String): Any? = suspendCoroutine { continuation ->
 
     client.newCall(request).enqueue(object : Callback {
         override fun onFailure(call: Call, e: IOException) {
+            println("poopopopo")
             e.printStackTrace()
             continuation.resume(null) // Resume with null in case of failure
         }
 
         override fun onResponse(call: Call, response: Response) {
+            println("hiasda")
             response.use {
                 if (!response.isSuccessful) {
                     continuation.resume(null) // Resume with null in case of non-successful response
@@ -152,13 +167,20 @@ suspend fun apiQuery(url: String): Any? = suspendCoroutine { continuation ->
 
 @OptIn(ExperimentalSerializationApi::class)
 suspend fun getLeastTime(stop: String): String? {
-    val data = apiQuery("$timeUrl$stop&func=0").toString()
-    val obj = JSONObject(data)
+    var obj: String
+    try {
+        val data = apiQuery("$timeUrl$stop&func=0").toString()
+        println(data)
+        obj = JSONObject(data)
             .getJSONObject("buses")
             .getJSONArray("lineas")
             .getJSONObject(0)
             .getJSONArray("buses")
             .getJSONObject(0)
             .getString("tiempo")
+    } catch (e: JSONException) {
+        obj = "?"
+    }
     return obj
 }
+

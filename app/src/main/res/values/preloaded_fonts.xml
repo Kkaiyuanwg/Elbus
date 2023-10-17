@@ -2,5 +2,7 @@
 <resources>
     <array name="preloaded_fonts" translatable="false">
         <item>@font/palanquin_dark_medium</item>
+        <item>@font/roboto</item>
+        <item>@font/roboto_medium</item>
     </array>
 </resources>
