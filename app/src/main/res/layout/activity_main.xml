@@ -9,7 +9,7 @@
     <TextView
         android:id="@+id/bMainLabel"
         android:layout_width="295dp"
-        android:layout_height="232dp"
+        android:layout_height="206dp"
         android:fontFamily="@font/mont"
         android:textAlignment="center"
         android:textSize="196sp"
@@ -17,17 +17,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.445"
+        app:layout_constraintVertical_bias="0.474"
         tools:text="s" />
 
     <TextView
         android:id="@+id/bSubLabel"
-        android:layout_width="228dp"
-        android:layout_height="63dp"
+        android:layout_width="232dp"
+        android:layout_height="43dp"
         android:layout_marginBottom="164dp"
         android:fontFamily="sans-serif"
         android:textAlignment="center"
-        android:textSize="20sp"
+        android:textSize="25sp"
         android:textStyle="bold"
         android:typeface="normal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -35,7 +35,43 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bMainLabel"
-        app:layout_constraintVertical_bias="0.114"
+        app:layout_constraintVertical_bias="0.0"
         tools:text="ALLAH" />
+
+    <TextView
+        android:id="@+id/bTimerLabel"
+        android:layout_width="252dp"
+        android:layout_height="50dp"
+        android:text=""
+        android:textAlignment="center"
+        android:textColor="#505050"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/bMainLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/bTextInput"
+        android:layout_width="409dp"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="79dp">
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:layout_width="300dp"
+        android:layout_height="47dp"
+        android:hint="Ponga aqui su parada"
+        android:inputType="number"
+        app:layout_constraintBottom_toTopOf="@+id/bTimerLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.697" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
