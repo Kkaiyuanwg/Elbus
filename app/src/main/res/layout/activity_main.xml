@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/bMainLabel"
+        android:layout_width="296dp"
+        android:layout_height="280dp"
+        android:fontFamily="@font/mont"
+        android:textAlignment="center"
+        android:textSize="196sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.454"
+        tools:text="s" />
+
+    <TextView
+        android:id="@+id/bSubLabel"
+        android:layout_width="228dp"
+        android:layout_height="63dp"
+        android:layout_marginBottom="164dp"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bMainLabel"
+        app:layout_constraintVertical_bias="0.114"
+        tools:text="ALLAH" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
