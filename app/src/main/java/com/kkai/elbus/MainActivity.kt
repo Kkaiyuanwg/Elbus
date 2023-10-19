@@ -1,56 +1,30 @@
-package com.kkai.myapplication
+package com.kkai.elbus
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Handler
-import android.util.AttributeSet
 import android.view.KeyEvent
-import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.SimpleAdapter
 import android.widget.TextView
-import androidx.annotation.RequiresApi
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.viewpager2.widget.ViewPager2
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.serialization.json.Json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.decodeFromString
 
-import java.io.IOException
-
-import okhttp3.Call
-import okhttp3.Callback
 import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import org.json.JSONArray
-import org.json.JSONObject
-import org.json.JSONException
-import java.net.HttpURLConnection
-import java.net.URL
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import org.jsoup.Jsoup
-import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-import com.kkai.myapplication.stopName
-
-private val client = OkHttpClient()
+internal val client = OkHttpClient()
 
 const val linesUrl = "https://itranvias.com/queryitr_v3.php?func=1"
 const val timeUrl = "https://itranvias.com/queryitr_v3.php?&dato="
 const val stopUrl = "https://itranvias.com/queryitr_v3.php?&dato=20160101T00322_es_0_"
 
-class CustomAutoCompleteTextView(context: Context) : AutoCompleteTextView(context) {
+class CustomAutoCompleteTextView(context: Context) : androidx.appcompat.widget.AppCompatAutoCompleteTextView(context) {
     override fun enoughToFilter(): Boolean {
         return true
     }
@@ -61,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bStopLabel: TextView
     private lateinit var bTimerLabel: TextView
     private lateinit var bTextInput: AutoCompleteTextView
+    private lateinit var bCarousel: ViewPager2
 
     private var isTimerRunning = false
     private var firstExecution = true
@@ -68,18 +43,30 @@ class MainActivity : AppCompatActivity() {
     private var countDownTimer: CountDownTimer? = null
 
     private var stopNumber = "251"
+    private var stopTimes: MutableList<Pair<String, String>> = mutableListOf(Pair("a", "?"))
 
+
+    @SuppressLint("MissingInflatedId", "InflateParams")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        bMainLabel = findViewById(R.id.bMainLabel)
-        bSubLabel = findViewById(R.id.bSubLabel)
+
+        val otherLayout = layoutInflater.inflate(R.layout.what_bus, null)
+
+        bMainLabel = otherLayout.findViewById(R.id.bMainLabel)
+        bSubLabel = otherLayout.findViewById(R.id.bSubLabel)
         bStopLabel = findViewById(R.id.bStopLabel)
         bTimerLabel = findViewById(R.id.bTimerLabel)
         bTextInput = findViewById(R.id.bStopInput)
+        bCarousel = findViewById(R.id.bCarousel)
 
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, getParadasArray())
-        bTextInput.setAdapter(adapter)
+        // Set up the ViewPager with the custom adapter
+         // Add your titles here
+        val pAdapter = CustomPagerAdapter(this, bCarousel, stopTimes)
+        bCarousel.adapter = pAdapter
+
+        val aAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, getParadasArray())
+        bTextInput.setAdapter(aAdapter)
         bTextInput.threshold = 1
 
         bTextInput.setOnEditorActionListener { _, _, event ->
@@ -91,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                     bTextInput.setText("")
                     bTextInput.clearFocus()
                     stopNumber = getFirstNumbers(firstSuggestion).toString()
-                    getTime(stopNumber)
+                    getTime(stopNumber, this)
                     startCountdownTimer(updateDelay, stopNumber)
                     bStopLabel.text = stopName(stopNumber)
                 }
@@ -124,15 +111,18 @@ class MainActivity : AppCompatActivity() {
                 }
             }.start()
             isTimerRunning = true
-            getTime(number)
+            getTime(number, this)
         }
     }
 
-    fun getTime(number: String) {
+    fun getTime(number: String, context: Context) {
         CoroutineScope(Dispatchers.Main).launch {
             val least = getLeastTime(number)
-
-            bMainLabel.text = least.toString()
+            if (least != null) {
+                stopTimes = least
+            }
+            val pAdapter = CustomPagerAdapter(context, bCarousel, stopTimes)
+            bCarousel.adapter = pAdapter
 
             if (least.toString() == "<1" || least.toString() == "0") {
                 bSubLabel.text = "No da tiempo bro"
@@ -140,14 +130,7 @@ class MainActivity : AppCompatActivity() {
                 bSubLabel.text = "No hay buses a esta hora"
             } else {
                 try {
-                    val lnum = least?.toInt()
-                    if (lnum != null) {
-                        when {
-                            lnum < 6 -> bSubLabel.text = "No da tiempo bro"
-                            lnum in 6 until 10 -> bSubLabel.text = "Corre"
-                            lnum >= 10 -> bSubLabel.text = "Chill!"
-                        }
-                    }
+                    val lnum = least
                 } catch (e: NumberFormatException) {
                     bSubLabel.text = "No hay buses a esta hora"
                 }
@@ -157,48 +140,3 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
-
-suspend fun apiQuery(url: String): Any? = suspendCoroutine { continuation ->
-    val request = Request.Builder()
-        .url(url)
-        .build()
-
-    client.newCall(request).enqueue(object : Callback {
-        override fun onFailure(call: Call, e: IOException) {
-            println("poopopopo")
-            e.printStackTrace()
-            continuation.resume(null) // Resume with null in case of failure
-        }
-
-        override fun onResponse(call: Call, response: Response) {
-            println("hiasda")
-            response.use {
-                if (!response.isSuccessful) {
-                    continuation.resume(null) // Resume with null in case of non-successful response
-                } else {
-                    continuation.resume(response.body!!.string()) // Resume with the response body
-                }
-            }
-        }
-    })
-}
-
-@OptIn(ExperimentalSerializationApi::class)
-suspend fun getLeastTime(stop: String): String? {
-    var obj: String
-    try {
-        val data = apiQuery("$timeUrl$stop&func=0").toString()
-        println(data)
-        obj = JSONObject(data)
-            .getJSONObject("buses")
-            .getJSONArray("lineas")
-            .getJSONObject(0)
-            .getJSONArray("buses")
-            .getJSONObject(0)
-            .getString("tiempo")
-    } catch (e: JSONException) {
-        obj = "?"
-    }
-    return obj
-}
-

@@ -1,4 +1,4 @@
-package com.kkai.myapplication
+package com.kkai.elbus
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

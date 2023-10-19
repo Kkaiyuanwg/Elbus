@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.kkai.myapplication"
+    namespace = "com.kkai.elbus"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.kkai.myapplication"
+        applicationId = "com.kkai.elbus"
         minSdk = 24
         targetSdk = 33
         versionCode = 1

@@ -1,4 +1,4 @@
-package com.kkai.myapplication
+package com.kkai.elbus
 
 import org.junit.Test
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutBus"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/bMainLabel"
+        android:layout_width="272dp"
+        android:layout_height="238dp"
+        android:fontFamily="@font/mont"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textSize="196sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="231dp"
+        tools:text="s"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/bSubLabel"
+        android:layout_width="289dp"
+        android:layout_height="41dp"
+        android:fontFamily="@font/roboto_medium"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:typeface="normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bMainLabel"
+        tools:text="ALLAH" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

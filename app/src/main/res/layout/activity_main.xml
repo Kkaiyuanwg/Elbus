@@ -15,41 +15,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal" />
-
-            <TextView
-                android:id="@+id/bMainLabel"
-                android:layout_width="272dp"
-                android:layout_height="238dp"
-                android:layout_marginTop="8dp"
-                android:fontFamily="@font/mont"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:textSize="196sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.496"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bStopLabel"
-                tools:text="s" />
-
-            <TextView
-                android:id="@+id/bSubLabel"
-                android:layout_width="289dp"
-                android:layout_height="41dp"
-                android:layout_marginTop="4dp"
-                android:fontFamily="@font/roboto_medium"
-                android:textAlignment="center"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:typeface="normal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bMainLabel"
-                tools:text="ALLAH" />
-
             <TextView
                 android:id="@+id/bStopLabel"
                 android:layout_width="300dp"
@@ -67,25 +32,38 @@
                 app:layout_constraintTop_toBottomOf="@+id/bStopInput"
                 tools:text="ALLAH" />
 
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/bCarousel"
+                android:layout_width="412dp"
+                android:layout_height="289dp"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bStopLabel"
+                tools:ignore="MissingConstraints" />
+
             <TextView
                 android:id="@+id/bTimerLabel"
                 android:layout_width="266dp"
                 android:layout_height="46dp"
-                android:layout_marginTop="36dp"
                 android:text=""
                 android:textAlignment="center"
                 android:textColor="#AAAAAA"
                 android:textSize="15sp"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.496"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bSubLabel" />
+                app:layout_constraintTop_toBottomOf="@+id/bCarousel"
+                app:layout_constraintVertical_bias="0.32" />
 
             <AutoCompleteTextView
                 android:id="@+id/bStopInput"
                 android:layout_width="295dp"
-                android:layout_height="47dp"
+                android:layout_height="48dp"
                 android:layout_marginTop="92dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.517"
