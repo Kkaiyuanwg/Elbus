@@ -1,12 +1,17 @@
 package com.kkai.myapplication
 
+import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
+import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.SimpleAdapter
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import com.google.android.material.textfield.TextInputEditText
@@ -45,17 +50,24 @@ const val linesUrl = "https://itranvias.com/queryitr_v3.php?func=1"
 const val timeUrl = "https://itranvias.com/queryitr_v3.php?&dato="
 const val stopUrl = "https://itranvias.com/queryitr_v3.php?&dato=20160101T00322_es_0_"
 
+class CustomAutoCompleteTextView(context: Context) : AutoCompleteTextView(context) {
+    override fun enoughToFilter(): Boolean {
+        return true
+    }
+}
 class MainActivity : AppCompatActivity() {
     private lateinit var bMainLabel: TextView
     private lateinit var bSubLabel: TextView
     private lateinit var bStopLabel: TextView
     private lateinit var bTimerLabel: TextView
-    private lateinit var bTextInput: TextInputEditText
+    private lateinit var bTextInput: AutoCompleteTextView
 
     private var isTimerRunning = false
     private var firstExecution = true
     private var updateDelay: Long = 30 * 1000
     private var countDownTimer: CountDownTimer? = null
+
+    private var stopNumber = "251"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,27 +76,33 @@ class MainActivity : AppCompatActivity() {
         bSubLabel = findViewById(R.id.bSubLabel)
         bStopLabel = findViewById(R.id.bStopLabel)
         bTimerLabel = findViewById(R.id.bTimerLabel)
-        bTextInput = findViewById(R.id.bTextInput)
+        bTextInput = findViewById(R.id.bStopInput)
 
-        bTextInput.setOnKeyListener(View.OnKeyListener { _, keyCode, event ->
-            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN) {
-                // Acción a realizar cuando se presiona "Enter"
-                val inputValue = bTextInput.text.toString()
-                if (inputValue == "666") {
-                    bStopLabel.text = "Hi otema666 LOL"
-                } else {
-                    bStopLabel.text = stopName(inputValue)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, getParadasArray())
+        bTextInput.setAdapter(adapter)
+        bTextInput.threshold = 1
+
+        bTextInput.setOnEditorActionListener { _, _, event ->
+            if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN) {
+
+                val suggestions = bTextInput.adapter?.count ?: 0
+                if (suggestions > 0) {
+                    val firstSuggestion = bTextInput.adapter?.getItem(0).toString()
+                    bTextInput.setText("")
+                    bTextInput.clearFocus()
+                    stopNumber = getFirstNumbers(firstSuggestion).toString()
+                    getTime(stopNumber)
+                    startCountdownTimer(updateDelay, stopNumber)
+                    bStopLabel.text = stopName(stopNumber)
                 }
-                getTime(inputValue)
-                startCountdownTimer(updateDelay, inputValue)
-                // Realizar acciones con 'least'
-                true // Indica que el evento ha sido manejado
-            } else {
-                false // Indica que el evento no ha sido manejado
+                return@setOnEditorActionListener true
             }
-        })
-        startCountdownTimer(updateDelay, "251")
-        bStopLabel.text = stopName("251")
+            false
+        }
+
+
+        startCountdownTimer(updateDelay, stopNumber)
+        bStopLabel.text = stopName(stopNumber)
     }
 
     private fun startCountdownTimer(millisInFuture: Long, number: String) {
@@ -116,7 +134,11 @@ class MainActivity : AppCompatActivity() {
 
             bMainLabel.text = least.toString()
 
-            if (least.toString() != "<1" || least.toString() != "0" || least.toString() != "?") {
+            if (least.toString() == "<1" || least.toString() == "0") {
+                bSubLabel.text = "No da tiempo bro"
+            } else if (least.toString() == "?") {
+                bSubLabel.text = "No hay buses a esta hora"
+            } else {
                 try {
                     val lnum = least?.toInt()
                     if (lnum != null) {
@@ -129,10 +151,6 @@ class MainActivity : AppCompatActivity() {
                 } catch (e: NumberFormatException) {
                     bSubLabel.text = "No hay buses a esta hora"
                 }
-            } else if (least.toString() == "?") {
-                bSubLabel.text = "No hay buses a esta hora"
-            } else {
-                bSubLabel.text = "OMG!"
             }
 
             startCountdownTimer(updateDelay, number)
