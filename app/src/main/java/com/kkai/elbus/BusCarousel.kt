@@ -1,6 +1,11 @@
 package com.kkai.elbus
 
 import android.content.Context
+import android.graphics.Color
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.BackgroundColorSpan
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,8 +31,21 @@ class CustomPagerAdapter(
 
     override fun onBindViewHolder(holder: PagerViewHolder, position: Int) {
         holder.textView1.text = pageTitles[position].second
+
         val linea = pageTitles[position].first
-        holder.textView2.text = "Línea $linea"
+        val text = "Línea  $linea "
+        println(linea)
+        val spannableString = SpannableString(text)
+
+        val endIndex = text.length
+
+        val backgroundColorSpan = BackgroundColorSpan(getColorByNom(linea))
+        val textColorSpan = ForegroundColorSpan(Color.WHITE)
+
+        spannableString.setSpan(backgroundColorSpan, 6, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(textColorSpan, 6, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        holder.textView2.text = spannableString
     }
 
     override fun getItemCount(): Int = pageTitles.size

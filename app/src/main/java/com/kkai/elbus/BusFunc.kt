@@ -1,5 +1,7 @@
 package com.kkai.elbus
 
+import android.graphics.Color
+import android.text.style.BackgroundColorSpan
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -22,10 +24,11 @@ data class busesClass(
     val dest_vuelta: String
 )
 
+val gson = Gson()
+val stopJSON = gson.fromJson(stops, Array<stopsClass>::class.java).toList()
+val busJSON = gson.fromJson(buses, Array<busesClass>::class.java).toList()
 
 fun stopName(number: String): String {
-    val gson = Gson()
-    val stopJSON = gson.fromJson(stops, Array<stopsClass>::class.java).toList()
     val desiredId = number.toInt() // Convert the desiredId to Int
 
     var loc = stopJSON.find { it.id == desiredId }?.nombre.toString()
@@ -39,9 +42,6 @@ fun stopName(number: String): String {
 }
 
 fun getNomComerById(id: String): String? {
-    val gson = Gson()
-    val busJSON = gson.fromJson(buses, Array<busesClass>::class.java).toList()
-
     var loc = busJSON.find { it.id == id }?.nom_comer
 
     return if (loc != "null") {
@@ -52,8 +52,17 @@ fun getNomComerById(id: String): String? {
     }
 }
 
+fun getColorByNom(nom: String): Int {
+    var col: String
+    if (nom == "a") {
+        col = "000000"
+    } else {
+        col = busJSON.find { it.nom_comer == nom }?.color_linea.toString()
+    }
+    return Color.parseColor("#$col")
+}
+
 fun getParadasArray(): Array<String> {
-    val gson = Gson()
     val locationType = object : TypeToken<List<stopsClass>>() {}.type
     val locationList: List<stopsClass> = gson.fromJson(stops, locationType)
 

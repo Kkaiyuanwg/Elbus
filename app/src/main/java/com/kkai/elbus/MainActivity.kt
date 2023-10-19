@@ -87,7 +87,6 @@ class MainActivity : AppCompatActivity() {
             false
         }
 
-
         startCountdownTimer(updateDelay, stopNumber)
         bStopLabel.text = stopName(stopNumber)
     }
@@ -123,6 +122,8 @@ class MainActivity : AppCompatActivity() {
             }
             val pAdapter = CustomPagerAdapter(context, bCarousel, stopTimes)
             bCarousel.adapter = pAdapter
+
+            println(stopTimes)
 
             if (least.toString() == "<1" || least.toString() == "0") {
                 bSubLabel.text = "No da tiempo bro"
