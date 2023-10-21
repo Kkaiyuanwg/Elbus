@@ -54,10 +54,13 @@ fun getNomComerById(id: String): String? {
 
 fun getColorByNom(nom: String): Int {
     var col: String
-    if (nom == "a") {
+    if (nom == "0") {
         col = "000000"
     } else {
         col = busJSON.find { it.nom_comer == nom }?.color_linea.toString()
+        if (col == "null") {
+            col = "000000"
+        }
     }
     return Color.parseColor("#$col")
 }

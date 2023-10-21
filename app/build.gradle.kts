@@ -9,10 +9,10 @@ android {
 
     defaultConfig {
         applicationId = "com.kkai.elbus"
-        minSdk = 24
+        minSdk = 21
         targetSdk = 33
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

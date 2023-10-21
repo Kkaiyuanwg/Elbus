@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.KeyEvent
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.TextView
@@ -29,6 +31,9 @@ class CustomAutoCompleteTextView(context: Context) : androidx.appcompat.widget.A
         return true
     }
 }
+
+var stopNumber = "251"
+
 class MainActivity : AppCompatActivity() {
     private lateinit var bMainLabel: TextView
     private lateinit var bSubLabel: TextView
@@ -42,8 +47,7 @@ class MainActivity : AppCompatActivity() {
     private var updateDelay: Long = 30 * 1000
     private var countDownTimer: CountDownTimer? = null
 
-    private var stopNumber = "251"
-    private var stopTimes: MutableList<Pair<String, String>> = mutableListOf(Pair("a", "?"))
+    private var stopTimes: MutableList<Pair<String, String>> = mutableListOf(Pair("0", "?"))
 
 
     @SuppressLint("MissingInflatedId", "InflateParams")
@@ -69,18 +73,19 @@ class MainActivity : AppCompatActivity() {
         bTextInput.setAdapter(aAdapter)
         bTextInput.threshold = 1
 
-        bTextInput.setOnEditorActionListener { _, _, event ->
-            if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN) {
-
+        bTextInput.setOnEditorActionListener { _, actionId, event ->
+            if ((actionId == EditorInfo.IME_ACTION_DONE) || (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER)) {
                 val suggestions = bTextInput.adapter?.count ?: 0
                 if (suggestions > 0) {
-                    val firstSuggestion = bTextInput.adapter?.getItem(0).toString()
                     bTextInput.setText("")
                     bTextInput.clearFocus()
+                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(bTextInput.windowToken, 0)
+                    val firstSuggestion = bTextInput.adapter?.getItem(0).toString()
                     stopNumber = getFirstNumbers(firstSuggestion).toString()
                     getTime(stopNumber, this)
                     startCountdownTimer(updateDelay, stopNumber)
-                    bStopLabel.text = stopName(stopNumber)
+                    bStopLabel.text = "$stopNumber - ${stopName(stopNumber)}"
                 }
                 return@setOnEditorActionListener true
             }
@@ -88,7 +93,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         startCountdownTimer(updateDelay, stopNumber)
-        bStopLabel.text = stopName(stopNumber)
+        bStopLabel.text = "$stopNumber - ${stopName(stopNumber)}"
     }
 
     private fun startCountdownTimer(millisInFuture: Long, number: String) {
@@ -110,11 +115,11 @@ class MainActivity : AppCompatActivity() {
                 }
             }.start()
             isTimerRunning = true
-            getTime(number, this)
+            getTime(stopNumber, this)
         }
     }
 
-    fun getTime(number: String, context: Context) {
+    private fun getTime(number: String, context: Context) {
         CoroutineScope(Dispatchers.Main).launch {
             val least = getLeastTime(number)
             if (least != null) {
@@ -123,10 +128,8 @@ class MainActivity : AppCompatActivity() {
             val pAdapter = CustomPagerAdapter(context, bCarousel, stopTimes)
             bCarousel.adapter = pAdapter
 
-            println(stopTimes)
-
             if (least.toString() == "<1" || least.toString() == "0") {
-                bSubLabel.text = "No da tiempo bro"
+                bSubLabel.text = "No da tiempo"
             } else if (least.toString() == "?") {
                 bSubLabel.text = "No hay buses a esta hora"
             } else {

@@ -72,12 +72,8 @@ suspend fun getLeastTime(stop: String): MutableList<Pair<String, String>>? {
         // Convert the list to an array
         obj = lineasTiemposList
 
-        // Print the resulting array
-        obj.forEach { (linea, tiempo) ->
-            println("Linea: $linea, Tiempo: $tiempo")
-        }
     } catch (e: JSONException) {
-        obj = mutableListOf(Pair("a", "?"))
+        obj = mutableListOf(Pair("0", "?"))
     }
     return obj
 }

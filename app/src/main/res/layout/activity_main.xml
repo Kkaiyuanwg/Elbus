@@ -19,7 +19,7 @@
                 android:id="@+id/bStopLabel"
                 android:layout_width="300dp"
                 android:layout_height="70dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
                 android:fontFamily="@font/roboto_medium"
                 android:gravity="center"
                 android:textAlignment="center"
@@ -27,19 +27,19 @@
                 android:textStyle="bold"
                 android:typeface="normal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.495"
+                app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/bStopInput"
                 tools:text="ALLAH" />
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/bCarousel"
-                android:layout_width="412dp"
-                android:layout_height="289dp"
-                android:layout_marginTop="24dp"
+                android:layout_width="411dp"
+                android:layout_height="306dp"
+                android:layout_marginTop="20dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/bStopLabel"
                 tools:ignore="MissingConstraints" />
@@ -58,17 +58,20 @@
                 app:layout_constraintHorizontal_bias="0.496"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/bCarousel"
-                app:layout_constraintVertical_bias="0.32" />
+                app:layout_constraintVertical_bias="0.323" />
 
             <AutoCompleteTextView
                 android:id="@+id/bStopInput"
                 android:layout_width="295dp"
                 android:layout_height="48dp"
-                android:layout_marginTop="92dp"
+                android:layout_marginTop="84dp"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:singleLine="true"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.517"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="LabelFor" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>

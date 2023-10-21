@@ -34,7 +34,6 @@ class CustomPagerAdapter(
 
         val linea = pageTitles[position].first
         val text = "Línea  $linea "
-        println(linea)
         val spannableString = SpannableString(text)
 
         val endIndex = text.length
