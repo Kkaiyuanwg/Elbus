@@ -1,5 +1,9 @@
 # Elbus
-Brief description of the Elbus application.
+[![Build Status](https://img.shields.io/travis/username/repo.svg)](https://travis-ci.org/username/repo)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Code Style](https://img.shields.io/badge/code%20style-Kotlin%20Style%20Guide-orange.svg)](https://kotlinlang.org/docs/reference/coding-conventions.html)
+
+An app to get info for the bus
 
 ---
 
@@ -12,13 +16,13 @@ Brief description of the Elbus application.
 
 ## Installation
 
-Go to releases and install from your phone (SDK>21)
+Go to [the releases tab](https://github.com/Kkaiyuanwg/Elbus/releases) and install from your phone (SDK>21)
 
 ---
 
 <details><summary>Issues</summary>
   
-If you encounter any problems or have suggestions for improvements, please [open a new issue](link-to-your-repository/issues).
+If you encounter any problems or have suggestions for improvements, please [open a new issue]([link-to-your-repository/](https://github.com/Kkaiyuanwg/Elbus/)issues).
 
 </details>
 
