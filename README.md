@@ -1,7 +1,7 @@
 # Elbus
-[![Build Status](https://img.shields.io/travis/username/repo.svg)](https://travis-ci.org/username/repo)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Code Style](https://img.shields.io/badge/code%20style-Kotlin%20Style%20Guide-orange.svg)](https://kotlinlang.org/docs/reference/coding-conventions.html)
+[![Release](https://img.shields.io/github/v/release/Kkaiyuanwg/Elbus)](https://github.com/Kkaiyuanwg/Elbus/releases)
+[![License](https://img.shields.io/badge/license-Apache_License_2.0-orange.svg)](https://opensource.org/licenses/MIT)
+[![Code Style](https://img.shields.io/badge/code-Kotlin-blue.svg)](https://kotlinlang.org/docs/reference/coding-conventions.html)
 
 An app to get info for the bus
 
@@ -22,7 +22,7 @@ Go to [the releases tab](https://github.com/Kkaiyuanwg/Elbus/releases) and insta
 
 <details><summary>Issues</summary>
   
-If you encounter any problems or have suggestions for improvements, please [open a new issue]([link-to-your-repository/](https://github.com/Kkaiyuanwg/Elbus/)issues).
+If you encounter any problems or have suggestions for improvements, please [open a new issue](https://github.com/Kkaiyuanwg/Elbus/issues).
 
 </details>
 
