@@ -8,8 +8,8 @@
 
     <TextView
         android:id="@+id/bMainLabel"
-        android:layout_width="272dp"
-        android:layout_height="238dp"
+        android:layout_width="419dp"
+        android:layout_height="234dp"
         android:fontFamily="@font/mont"
         android:gravity="center"
         android:textAlignment="center"
@@ -17,9 +17,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="231dp"
-        tools:text="?"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteY="244dp"
+        tools:text="?" />
 
     <TextView
         android:id="@+id/bSubLabel"
