@@ -45,4 +45,4 @@ See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
 
 ## License
 
-[Apache 2.0](./LICENSE) © [Kkai]
+[Apache License 2.0](./LICENSE) © Kkai
