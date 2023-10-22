@@ -36,8 +36,8 @@ suspend fun apiQuery(url: String): Any? = suspendCoroutine { continuation ->
 }
 
 @OptIn(ExperimentalSerializationApi::class)
-suspend fun getLeastTime(stop: String): MutableList<Pair<String, String>>? {
-    var obj: MutableList<Pair<String, String>>
+suspend fun getLeastTime(stop: String): MutableList<Triple<String, String, String>>? {
+    var obj: MutableList<Triple<String, String, String>>
     try {
         val data = apiQuery("$timeUrl$stop&func=0").toString()
 
@@ -52,7 +52,7 @@ suspend fun getLeastTime(stop: String): MutableList<Pair<String, String>>? {
         val lineasArray = busesObject.getJSONArray("lineas")
 
         // Initialize an empty list to store lineas and tiempos
-        val lineasTiemposList = mutableListOf<Pair<String, String>>()
+        val lineasTiemposList = mutableListOf<Triple<String, String, String>>()
 
         // Iterate through the 'lineas' array
         for (i in 0 until lineasArray.length()) {
@@ -65,15 +65,21 @@ suspend fun getLeastTime(stop: String): MutableList<Pair<String, String>>? {
             // Check if there are buses for the current linea
             if (busesArray.length() > 0) {
                 val tiempo = busesArray.getJSONObject(0).getString("tiempo")
-                lineasTiemposList.add(linea to tiempo)
+                val subtiempo = if (busesArray.length() > 1) {
+                    busesArray.getJSONObject(1).getString("tiempo")
+                } else {
+                    "?"
+                }
+                lineasTiemposList.add(Triple(linea, tiempo, subtiempo))
             }
         }
 
         // Convert the list to an array
         obj = lineasTiemposList
+        println(obj)
 
     } catch (e: JSONException) {
-        obj = mutableListOf(Pair("0", "?"))
+        obj = mutableListOf(Triple("0", "?", "?"))
     }
     return obj
 }

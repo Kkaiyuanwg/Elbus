@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
     private var updateDelay: Long = 30 * 1000
     private var countDownTimer: CountDownTimer? = null
 
-    private var stopTimes: MutableList<Pair<String, String>> = mutableListOf(Pair("0", "?"))
+    private var stopTimes: MutableList<Triple<String, String, String>> = mutableListOf(Triple("0", "?", "?"))
 
 
     @SuppressLint("MissingInflatedId", "InflateParams")

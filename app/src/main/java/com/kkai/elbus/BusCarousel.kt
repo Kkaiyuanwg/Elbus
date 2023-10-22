@@ -17,12 +17,13 @@ import kotlinx.coroutines.CoroutineScope
 class CustomPagerAdapter(
     private val context: Context,
     private val viewPager: ViewPager2,
-    private val pageTitles: MutableList<Pair<String, String>>
+    private val pageTitles: MutableList<Triple<String, String, String>>
 ) : RecyclerView.Adapter<CustomPagerAdapter.PagerViewHolder>() {
 
     inner class PagerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textView1: TextView = itemView.findViewById(R.id.bMainLabel)
         val textView2: TextView = itemView.findViewById(R.id.bSubLabel)
+        val textView3: TextView = itemView.findViewById(R.id.bMainSubLabel)
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PagerViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.what_bus, parent, false)
@@ -31,6 +32,7 @@ class CustomPagerAdapter(
 
     override fun onBindViewHolder(holder: PagerViewHolder, position: Int) {
         holder.textView1.text = pageTitles[position].second
+        holder.textView3.text = pageTitles[position].third
 
         val linea = pageTitles[position].first
         val text = "Línea  $linea "
