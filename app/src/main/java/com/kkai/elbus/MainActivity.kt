@@ -2,7 +2,9 @@ package com.kkai.elbus
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
+import android.location.Location
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.KeyEvent
@@ -11,7 +13,11 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.TextView
+import android.Manifest
+
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +38,7 @@ class CustomAutoCompleteTextView(context: Context) : androidx.appcompat.widget.A
     }
 }
 
-var stopNumber = "251"
+var stopNumber = "1"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var bMainLabel: TextView
@@ -49,6 +55,21 @@ class MainActivity : AppCompatActivity() {
 
     private var stopTimes: MutableList<Triple<String, String, String>> = mutableListOf(Triple("0", "?", "?"))
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == 123) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                requestLocationUpdates(this) { coordinates ->
+                    println(coordinates)
+                }
+            } else {
+                println("no loc")
+            }
+        }
+    }
 
     @SuppressLint("MissingInflatedId", "InflateParams")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,16 +94,29 @@ class MainActivity : AppCompatActivity() {
         bTextInput.setAdapter(aAdapter)
         bTextInput.threshold = 1
 
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED) {
+            println(stopNumber)
+            stopNumber = getClosestLocation(getCoordinates(this))?.id.toString()
+        } else {
+            println(stopNumber)
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 123)
+        }
+
+        println(stopNumber)
         bTextInput.setOnEditorActionListener { _, actionId, event ->
             if ((actionId == EditorInfo.IME_ACTION_DONE) || (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER)) {
                 val suggestions = bTextInput.adapter?.count ?: 0
                 if (suggestions > 0) {
                     bTextInput.setText("")
                     bTextInput.clearFocus()
-                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    println(getCoordinates(this))
+                    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(bTextInput.windowToken, 0)
                     val firstSuggestion = bTextInput.adapter?.getItem(0).toString()
                     stopNumber = getFirstNumbers(firstSuggestion).toString()
+                    println(getClosestLocation(getCoordinates(this)))
                     getTime(stopNumber, this)
                     startCountdownTimer(updateDelay, stopNumber)
                     bStopLabel.text = "$stopNumber - ${stopName(stopNumber)}"

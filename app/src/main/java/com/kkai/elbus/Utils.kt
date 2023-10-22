@@ -1,6 +1,12 @@
 package com.kkai.elbus
 
+import android.app.Activity
+import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.TypedArray
+import android.location.Location
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import kotlinx.serialization.ExperimentalSerializationApi
 import okhttp3.Call
 import okhttp3.Callback
@@ -84,3 +90,38 @@ suspend fun getLeastTime(stop: String): MutableList<Triple<String, String, Strin
     return obj
 }
 
+fun getCoordinates(thiss: Context): Pair<Double, Double>? {
+    var colordinates: Pair<Double, Double>? = null
+    requestLocationUpdates(thiss) { coordinates ->
+        colordinates = coordinates
+    }
+    return colordinates
+}
+fun requestLocationUpdates(thiss: Context, callback: (Pair<Double, Double>?) -> Unit) {
+    var fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(thiss)
+    var coordinates: Pair<Double, Double>?
+    fusedLocationClient.lastLocation
+        .addOnSuccessListener { location: Location? ->
+            location?.let {
+                coordinates = Pair(location.latitude, location.longitude)
+                callback(coordinates)
+            }
+        }
+}
+
+fun onRequestPermissionsResult(
+    requestCode: Int,
+    permissions: Array<out String>,
+    grantResults: IntArray,
+    thiss: Context
+) {
+    if (requestCode == 123) {
+        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            requestLocationUpdates(thiss) { coordinates ->
+                println(coordinates)
+            }
+        } else {
+            println("no loc")
+        }
+    }
+}
