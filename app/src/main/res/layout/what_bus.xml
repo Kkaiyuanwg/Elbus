@@ -6,22 +6,61 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/bMainLabel"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:fontFamily="@font/mont"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:textSize="196sp"
-        android:visibility="visible"
-        app:layout_constraintEnd_toStartOf="@+id/bMainSubLabel"
-        app:layout_constraintHorizontal_bias="1.0"
+        android:layout_height="226dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteY="260dp"
-        tools:text="?" />
+        tools:layout_editor_absoluteY="256dp">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="83dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="120dp"
+            android:layout_marginEnd="4dp"
+            android:fontFamily="@font/roboto"
+            android:text="Siguiente:"
+            android:textAlignment="center"
+            android:textColor="#8C8C8C"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/bMainLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="224dp"
+            android:layout_marginStart="4dp"
+            android:fontFamily="@font/mont"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textSize="196sp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/bMainSubLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints"
+            tools:text="6" />
+
+        <TextView
+            android:id="@+id/bMainSubLabel"
+            android:layout_width="82dp"
+            android:layout_height="80dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/mont"
+            android:textAlignment="center"
+            android:textColor="#8C8C8C"
+            android:textSize="60sp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="33" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/bSubLabel"
@@ -34,21 +73,7 @@
         android:typeface="normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bMainLabel"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
         tools:text="ALLAH" />
-
-    <TextView
-        android:id="@+id/bMainSubLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="128dp"
-        android:layout_marginBottom="4dp"
-        android:fontFamily="@font/mont"
-        android:textAlignment="center"
-        android:textSize="90sp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/bSubLabel"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:text="?" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
