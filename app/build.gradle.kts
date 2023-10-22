@@ -47,6 +47,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
     implementation("org.jsoup:jsoup:1.14.3")
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

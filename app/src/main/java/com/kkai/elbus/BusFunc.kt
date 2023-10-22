@@ -1,7 +1,7 @@
 package com.kkai.elbus
 
 import android.graphics.Color
-import android.text.style.BackgroundColorSpan
+import android.location.Location
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -79,3 +79,31 @@ fun getFirstNumbers(input: String): Int? {
     val matchResult = regex.find(input)
     return matchResult?.groupValues?.get(1)?.toIntOrNull()
 }
+
+fun getClosestLocation(userLatLong: Pair<Double, Double>?): stopsClass? {
+    val userLocation = Location("User")
+    if (userLatLong != null) {
+        userLocation.latitude = userLatLong.second
+        userLocation.longitude = userLatLong.first
+    }
+
+    var closestLocation: stopsClass? = null
+    var closestDistance = Float.MAX_VALUE
+
+    for (location in stopJSON) {
+        val destinationLocation = Location("Destination")
+        destinationLocation.latitude = location.posy
+        destinationLocation.longitude = location.posx
+
+        val distance = haversine(userLocation.latitude, userLocation.longitude, location.posx, location.posy)
+
+        if (distance < closestDistance) {
+            closestDistance = distance.toFloat()
+            closestLocation = location
+        }
+    }
+
+    return closestLocation
+}
+
+

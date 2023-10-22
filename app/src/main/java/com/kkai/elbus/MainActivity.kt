@@ -2,6 +2,7 @@ package com.kkai.elbus
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -11,14 +12,18 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.TextView
-import androidx.core.content.ContentProviderCompat.requireContext
+import android.Manifest
+import android.location.Location
+
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.gms.common.internal.Objects.ToStringHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 import okhttp3.OkHttpClient
-import kotlin.coroutines.suspendCoroutine
 
 internal val client = OkHttpClient()
 
@@ -26,13 +31,13 @@ const val linesUrl = "https://itranvias.com/queryitr_v3.php?func=1"
 const val timeUrl = "https://itranvias.com/queryitr_v3.php?&dato="
 const val stopUrl = "https://itranvias.com/queryitr_v3.php?&dato=20160101T00322_es_0_"
 
+var stopNumber: String = "1"
 class CustomAutoCompleteTextView(context: Context) : androidx.appcompat.widget.AppCompatAutoCompleteTextView(context) {
     override fun enoughToFilter(): Boolean {
         return true
     }
 }
 
-var stopNumber = "251"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var bMainLabel: TextView
@@ -49,6 +54,21 @@ class MainActivity : AppCompatActivity() {
 
     private var stopTimes: MutableList<Triple<String, String, String>> = mutableListOf(Triple("0", "?", "?"))
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == 123) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                requestLocationUpdates(this) { coordinates ->
+                    println(coordinates)
+                }
+            } else {
+                println("no loc")
+            }
+        }
+    }
 
     @SuppressLint("MissingInflatedId", "InflateParams")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,8 +84,10 @@ class MainActivity : AppCompatActivity() {
         bTextInput = findViewById(R.id.bStopInput)
         bCarousel = findViewById(R.id.bCarousel)
 
-        // Set up the ViewPager with the custom adapter
-         // Add your titles here
+        requestLocationUpdates(this) {coor ->
+            stopNumber = getClosestLocation(coor)?.id.toString()
+        }
+
         val pAdapter = CustomPagerAdapter(this, bCarousel, stopTimes)
         bCarousel.adapter = pAdapter
 
@@ -73,13 +95,25 @@ class MainActivity : AppCompatActivity() {
         bTextInput.setAdapter(aAdapter)
         bTextInput.threshold = 1
 
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED) {
+            requestLocationUpdates(this) {coor ->
+                stopNumber = getClosestLocation(coor)?.id.toString()
+                startCountdownTimer(updateDelay, stopNumber)
+                bStopLabel.text = "$stopNumber - ${stopName(stopNumber)}"
+            }
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 123)
+        }
+
         bTextInput.setOnEditorActionListener { _, actionId, event ->
             if ((actionId == EditorInfo.IME_ACTION_DONE) || (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER)) {
                 val suggestions = bTextInput.adapter?.count ?: 0
                 if (suggestions > 0) {
                     bTextInput.setText("")
                     bTextInput.clearFocus()
-                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(bTextInput.windowToken, 0)
                     val firstSuggestion = bTextInput.adapter?.getItem(0).toString()
                     stopNumber = getFirstNumbers(firstSuggestion).toString()
@@ -92,6 +126,7 @@ class MainActivity : AppCompatActivity() {
             false
         }
 
+        println("hi $stopNumber")
         startCountdownTimer(updateDelay, stopNumber)
         bStopLabel.text = "$stopNumber - ${stopName(stopNumber)}"
     }
