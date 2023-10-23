@@ -82,7 +82,6 @@ suspend fun getLeastTime(stop: String): MutableList<Triple<String, String, Strin
 
         // Convert the list to an array
         obj = lineasTiemposList
-        println(obj)
 
     } catch (e: JSONException) {
         obj = mutableListOf(Triple("0", "?", "?"))
@@ -90,13 +89,6 @@ suspend fun getLeastTime(stop: String): MutableList<Triple<String, String, Strin
     return obj
 }
 
-fun getCoordinates(thiss: Context): Pair<Double, Double>? {
-    var colordinates: Pair<Double, Double>? = null
-    requestLocationUpdates(thiss) { coordinates ->
-        colordinates = coordinates
-    }
-    return colordinates
-}
 fun requestLocationUpdates(thiss: Context, callback: (Pair<Double, Double>?) -> Unit) {
     var fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(thiss)
     var coordinates: Pair<Double, Double>?

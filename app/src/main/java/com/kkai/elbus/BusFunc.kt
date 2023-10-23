@@ -1,9 +1,7 @@
 package com.kkai.elbus
 
 import android.graphics.Color
-import android.graphics.Point
 import android.location.Location
-import android.text.style.BackgroundColorSpan
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

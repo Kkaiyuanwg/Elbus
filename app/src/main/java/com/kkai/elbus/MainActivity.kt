@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
-import android.location.Location
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.KeyEvent
@@ -16,15 +15,14 @@ import android.widget.TextView
 import android.Manifest
 
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.gms.common.internal.Objects.ToStringHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 import okhttp3.OkHttpClient
-import kotlin.coroutines.suspendCoroutine
 
 internal val client = OkHttpClient()
 
@@ -85,8 +83,11 @@ class MainActivity : AppCompatActivity() {
         bTextInput = findViewById(R.id.bStopInput)
         bCarousel = findViewById(R.id.bCarousel)
 
-        // Set up the ViewPager with the custom adapter
-         // Add your titles here
+        requestLocationUpdates(this) {coor ->
+            stopNumber = getClosestLocation(coor)?.id.toString()
+            println(stopNumber)
+        }
+
         val pAdapter = CustomPagerAdapter(this, bCarousel, stopTimes)
         bCarousel.adapter = pAdapter
 
@@ -96,7 +97,6 @@ class MainActivity : AppCompatActivity() {
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED) {
             println(stopNumber)
-            stopNumber = getClosestLocation(getCoordinates(this))?.id.toString()
         } else {
             println(stopNumber)
             ActivityCompat.requestPermissions(
@@ -111,12 +111,10 @@ class MainActivity : AppCompatActivity() {
                 if (suggestions > 0) {
                     bTextInput.setText("")
                     bTextInput.clearFocus()
-                    println(getCoordinates(this))
                     val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(bTextInput.windowToken, 0)
                     val firstSuggestion = bTextInput.adapter?.getItem(0).toString()
                     stopNumber = getFirstNumbers(firstSuggestion).toString()
-                    println(getClosestLocation(getCoordinates(this)))
                     getTime(stopNumber, this)
                     startCountdownTimer(updateDelay, stopNumber)
                     bStopLabel.text = "$stopNumber - ${stopName(stopNumber)}"
