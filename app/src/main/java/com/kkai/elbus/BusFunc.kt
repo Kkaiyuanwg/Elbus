@@ -83,7 +83,6 @@ fun getFirstNumbers(input: String): Int? {
 fun getClosestLocation(userLatLong: Pair<Double, Double>?): stopsClass? {
     val userLocation = Location("User")
     if (userLatLong != null) {
-        println("hi $userLatLong hi")
         userLocation.latitude = userLatLong.second
         userLocation.longitude = userLatLong.first
     }

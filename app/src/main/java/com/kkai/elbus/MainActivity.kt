@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.TextView
 import android.Manifest
+import android.location.Location
 
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -36,6 +37,7 @@ class CustomAutoCompleteTextView(context: Context) : androidx.appcompat.widget.A
         return true
     }
 }
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var bMainLabel: TextView
@@ -84,7 +86,6 @@ class MainActivity : AppCompatActivity() {
 
         requestLocationUpdates(this) {coor ->
             stopNumber = getClosestLocation(coor)?.id.toString()
-            println("stop $stopNumber syoppppppppppppppp")
         }
 
         val pAdapter = CustomPagerAdapter(this, bCarousel, stopTimes)
@@ -95,6 +96,11 @@ class MainActivity : AppCompatActivity() {
         bTextInput.threshold = 1
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED) {
+            requestLocationUpdates(this) {coor ->
+                stopNumber = getClosestLocation(coor)?.id.toString()
+                startCountdownTimer(updateDelay, stopNumber)
+                bStopLabel.text = "$stopNumber - ${stopName(stopNumber)}"
+            }
         } else {
             ActivityCompat.requestPermissions(
                 this,
@@ -107,9 +113,6 @@ class MainActivity : AppCompatActivity() {
                 if (suggestions > 0) {
                     bTextInput.setText("")
                     bTextInput.clearFocus()
-                    requestLocationUpdates(this) {coor ->
-                        println(coor)
-                    }
                     val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(bTextInput.windowToken, 0)
                     val firstSuggestion = bTextInput.adapter?.getItem(0).toString()
@@ -123,6 +126,7 @@ class MainActivity : AppCompatActivity() {
             false
         }
 
+        println("hi $stopNumber")
         startCountdownTimer(updateDelay, stopNumber)
         bStopLabel.text = "$stopNumber - ${stopName(stopNumber)}"
     }

@@ -93,30 +93,19 @@ suspend fun getLeastTime(stop: String): MutableList<Triple<String, String, Strin
 fun requestLocationUpdates(thiss: Context, callback: (Pair<Double, Double>?) -> Unit) {
     var fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(thiss)
     var coordinates: Pair<Double, Double>?
-    fusedLocationClient.lastLocation
-        .addOnSuccessListener { location: Location? ->
+    fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             location?.let {
                 coordinates = Pair(location.latitude, location.longitude)
+                println("Latitude: ${coordinates!!.first}, Longitude: ${coordinates!!.second}")
                 callback(coordinates)
+            } ?: run {
+                println("Location is null")
+                callback(null)
             }
+    }.addOnFailureListener { exception ->
+            println("Location retrieval failed: $exception")
+            callback(null)
         }
-}
-
-fun onRequestPermissionsResult(
-    requestCode: Int,
-    permissions: Array<out String>,
-    grantResults: IntArray,
-    thiss: Context
-) {
-    if (requestCode == 123) {
-        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            requestLocationUpdates(thiss) { coordinates ->
-                println(coordinates)
-            }
-        } else {
-            println("no loc")
-        }
-    }
 }
 
 fun haversine(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
