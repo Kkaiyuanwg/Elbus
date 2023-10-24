@@ -30,13 +30,12 @@ const val linesUrl = "https://itranvias.com/queryitr_v3.php?func=1"
 const val timeUrl = "https://itranvias.com/queryitr_v3.php?&dato="
 const val stopUrl = "https://itranvias.com/queryitr_v3.php?&dato=20160101T00322_es_0_"
 
+var stopNumber: String = "1"
 class CustomAutoCompleteTextView(context: Context) : androidx.appcompat.widget.AppCompatAutoCompleteTextView(context) {
     override fun enoughToFilter(): Boolean {
         return true
     }
 }
-
-var stopNumber = "1"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var bMainLabel: TextView
@@ -85,7 +84,7 @@ class MainActivity : AppCompatActivity() {
 
         requestLocationUpdates(this) {coor ->
             stopNumber = getClosestLocation(coor)?.id.toString()
-            println(stopNumber)
+            println("stop $stopNumber syoppppppppppppppp")
         }
 
         val pAdapter = CustomPagerAdapter(this, bCarousel, stopTimes)
@@ -96,21 +95,21 @@ class MainActivity : AppCompatActivity() {
         bTextInput.threshold = 1
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED) {
-            println(stopNumber)
         } else {
-            println(stopNumber)
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 123)
         }
 
-        println(stopNumber)
         bTextInput.setOnEditorActionListener { _, actionId, event ->
             if ((actionId == EditorInfo.IME_ACTION_DONE) || (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER)) {
                 val suggestions = bTextInput.adapter?.count ?: 0
                 if (suggestions > 0) {
                     bTextInput.setText("")
                     bTextInput.clearFocus()
+                    requestLocationUpdates(this) {coor ->
+                        println(coor)
+                    }
                     val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(bTextInput.windowToken, 0)
                     val firstSuggestion = bTextInput.adapter?.getItem(0).toString()

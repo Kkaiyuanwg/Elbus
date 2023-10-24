@@ -82,9 +82,8 @@ fun getFirstNumbers(input: String): Int? {
 
 fun getClosestLocation(userLatLong: Pair<Double, Double>?): stopsClass? {
     val userLocation = Location("User")
-    println(userLatLong)
     if (userLatLong != null) {
-        println(userLatLong)
+        println("hi $userLatLong hi")
         userLocation.latitude = userLatLong.second
         userLocation.longitude = userLatLong.first
     }
@@ -97,12 +96,15 @@ fun getClosestLocation(userLatLong: Pair<Double, Double>?): stopsClass? {
         destinationLocation.latitude = location.posy
         destinationLocation.longitude = location.posx
 
-        val distance = userLocation.distanceTo(destinationLocation)
+        val distance = haversine(userLocation.latitude, userLocation.longitude, location.posx, location.posy)
+
         if (distance < closestDistance) {
-            closestDistance = distance
+            closestDistance = distance.toFloat()
             closestLocation = location
         }
     }
 
     return closestLocation
 }
+
+
