@@ -14,11 +14,16 @@ import android.widget.AutoCompleteTextView
 import android.widget.TextView
 import android.Manifest
 import android.location.Location
+import android.view.Gravity
+import android.widget.Button
+import android.widget.Toast
 
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.common.internal.Objects.ToStringHelper
+import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -84,6 +89,9 @@ class MainActivity : AppCompatActivity() {
         bTextInput = findViewById(R.id.bStopInput)
         bCarousel = findViewById(R.id.bCarousel)
 
+        val btn_click_me = findViewById(R.id.button) as Button
+        val mDrawerLayout = findViewById(R.id.drawer_layout) as DrawerLayout
+
         requestLocationUpdates(this) {coor ->
             stopNumber = getClosestLocation(coor)?.id.toString()
         }
@@ -105,6 +113,10 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 123)
+        }
+
+        btn_click_me.setOnClickListener {
+            mDrawerLayout.openDrawer(findViewById(R.id.nav_view));
         }
 
         bTextInput.setOnEditorActionListener { _, actionId, event ->
