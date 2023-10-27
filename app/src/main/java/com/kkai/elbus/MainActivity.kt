@@ -1,48 +1,22 @@
 package com.kkai.elbus
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.view.KeyEvent
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
+import android.util.Log
 import android.widget.AutoCompleteTextView
-import android.widget.TextView
-import android.Manifest
-import android.location.Location
-import android.view.Gravity
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
-
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
+
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.gms.common.internal.Objects.ToStringHelper
 import com.google.android.material.navigation.NavigationView
+import com.kkai.elbus.Utils.CustomPagerAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
-import okhttp3.OkHttpClient
-
-internal val client = OkHttpClient()
-
-const val linesUrl = "https://itranvias.com/queryitr_v3.php?func=1"
-const val timeUrl = "https://itranvias.com/queryitr_v3.php?&dato="
-const val stopUrl = "https://itranvias.com/queryitr_v3.php?&dato=20160101T00322_es_0_"
-
-var stopNumber: String = "1"
-class CustomAutoCompleteTextView(context: Context) : androidx.appcompat.widget.AppCompatAutoCompleteTextView(context) {
-    override fun enoughToFilter(): Boolean {
-        return true
-    }
-}
-
 
 class MainActivity : AppCompatActivity() {
     private lateinit var bMainLabel: TextView
@@ -59,135 +33,50 @@ class MainActivity : AppCompatActivity() {
 
     private var stopTimes: MutableList<Triple<String, String, String>> = mutableListOf(Triple("0", "?", "?"))
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode == 123) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                requestLocationUpdates(this) { coordinates ->
-                    println(coordinates)
-                }
-            } else {
-                println("no loc")
-            }
-        }
-    }
-
-    @SuppressLint("MissingInflatedId", "InflateParams")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        val otherLayout = layoutInflater.inflate(R.layout.what_bus, null)
-
-        bMainLabel = otherLayout.findViewById(R.id.bMainLabel)
-        bSubLabel = otherLayout.findViewById(R.id.bSubLabel)
-        bStopLabel = findViewById(R.id.bStopLabel)
-        bTimerLabel = findViewById(R.id.bTimerLabel)
-        bTextInput = findViewById(R.id.bStopInput)
-        bCarousel = findViewById(R.id.bCarousel)
+        setContentView(R.layout.base)
 
         val btn_click_me = findViewById(R.id.button) as Button
         val mDrawerLayout = findViewById(R.id.drawer_layout) as DrawerLayout
+        val navView: NavigationView = findViewById(R.id.nav_view)
 
-        requestLocationUpdates(this) {coor ->
-            stopNumber = getClosestLocation(coor)?.id.toString()
-        }
+        val menu = navView.menu // Get the menu of the NavigationView
+        menuInflater.inflate(R.layout.drawer_menu, menu)
 
-        val pAdapter = CustomPagerAdapter(this, bCarousel, stopTimes)
-        bCarousel.adapter = pAdapter
+        navView.setNavigationItemSelectedListener {
+            println("hi")
+            Log.d("LOL", "g")
+            when (it.itemId) {
+                R.id.nav_item1 -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, MainFragment())
+                        .commit()
+                    mDrawerLayout.closeDrawer(findViewById(R.id.nav_view))
+                    true
+                }
+                R.id.nav_item2 -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, LineFragment())
+                        .commit()
+                    mDrawerLayout.closeDrawer(findViewById(R.id.nav_view))
+                    true
+                }
+                // Add more cases as needed
 
-        val aAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, getParadasArray())
-        bTextInput.setAdapter(aAdapter)
-        bTextInput.threshold = 1
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED) {
-            requestLocationUpdates(this) {coor ->
-                stopNumber = getClosestLocation(coor)?.id.toString()
-                startCountdownTimer(updateDelay, stopNumber)
-                bStopLabel.text = "$stopNumber - ${stopName(stopNumber)}"
+                else -> false
             }
-        } else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 123)
         }
-
-        btn_click_me.setOnClickListener {
+        btn_click_me.setOnClickListener{
+            println("pressed")
             mDrawerLayout.openDrawer(findViewById(R.id.nav_view));
         }
 
-        bTextInput.setOnEditorActionListener { _, actionId, event ->
-            if ((actionId == EditorInfo.IME_ACTION_DONE) || (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER)) {
-                val suggestions = bTextInput.adapter?.count ?: 0
-                if (suggestions > 0) {
-                    bTextInput.setText("")
-                    bTextInput.clearFocus()
-                    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(bTextInput.windowToken, 0)
-                    val firstSuggestion = bTextInput.adapter?.getItem(0).toString()
-                    stopNumber = getFirstNumbers(firstSuggestion).toString()
-                    getTime(stopNumber, this)
-                    startCountdownTimer(updateDelay, stopNumber)
-                    bStopLabel.text = "$stopNumber - ${stopName(stopNumber)}"
-                }
-                return@setOnEditorActionListener true
-            }
-            false
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, MainFragment())
+                .commit()
         }
 
-        println("hi $stopNumber")
-        startCountdownTimer(updateDelay, stopNumber)
-        bStopLabel.text = "$stopNumber - ${stopName(stopNumber)}"
-    }
-
-    private fun startCountdownTimer(millisInFuture: Long, number: String) {
-        if (!isTimerRunning) {
-            countDownTimer = object : CountDownTimer(millisInFuture, 1000) {
-                override fun onTick(millisUntilFinished: Long) {
-                    if ((millisUntilFinished / 1000) > 0) {
-                        val secondsRemaining = millisUntilFinished / 1000
-                        bTimerLabel.text = "Próxima actualización en ${secondsRemaining}s"
-                    } else {
-                        bTimerLabel.text = "Actualizando..."
-                    }
-                }
-
-                override fun onFinish() {
-                    bTimerLabel.text = "Actualizando..."
-                    isTimerRunning = false
-                    startCountdownTimer(updateDelay, number)
-                }
-            }.start()
-            isTimerRunning = true
-            getTime(stopNumber, this)
-        }
-    }
-
-    private fun getTime(number: String, context: Context) {
-        CoroutineScope(Dispatchers.Main).launch {
-            val least = getLeastTime(number)
-            if (least != null) {
-                stopTimes = least
-            }
-            val pAdapter = CustomPagerAdapter(context, bCarousel, stopTimes)
-            bCarousel.adapter = pAdapter
-
-            if (least.toString() == "<1" || least.toString() == "0") {
-                bSubLabel.text = "No da tiempo"
-            } else if (least.toString() == "?") {
-                bSubLabel.text = "No hay buses a esta hora"
-            } else {
-                try {
-                    val lnum = least
-                } catch (e: NumberFormatException) {
-                    bSubLabel.text = "No hay buses a esta hora"
-                }
-            }
-
-            startCountdownTimer(updateDelay, number)
-        }
     }
 }

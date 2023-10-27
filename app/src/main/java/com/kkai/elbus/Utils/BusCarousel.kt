@@ -1,4 +1,4 @@
-package com.kkai.elbus
+package com.kkai.elbus.Utils
 
 import android.content.Context
 import android.graphics.Color
@@ -12,7 +12,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import kotlinx.coroutines.CoroutineScope
+import com.kkai.elbus.R
+import com.kkai.elbus.getColorByNom
 
 class CustomPagerAdapter(
     private val context: Context,
