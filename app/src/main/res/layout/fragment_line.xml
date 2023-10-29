@@ -6,23 +6,22 @@
     android:layout_height="match_parent"
     tools:context=".LineFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="332dp"
-            android:layout_height="wrap_content"
-            android:text="Hi"
-            android:textAlignment="center"
-            android:textSize="60sp"
-            android:textStyle="bold"
+        <ListView
+            android:id="@+id/blistView"
+            style="@android:style/Widget.Material.ListView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="50dp"
+            android:headerDividersEnabled="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5" />
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
