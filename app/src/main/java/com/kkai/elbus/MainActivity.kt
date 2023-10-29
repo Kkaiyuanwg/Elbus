@@ -45,8 +45,6 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.layout.drawer_menu, menu)
 
         navView.setNavigationItemSelectedListener {
-            println("hi")
-            Log.d("LOL", "g")
             when (it.itemId) {
                 R.id.nav_item1 -> {
                     supportFragmentManager.beginTransaction()
