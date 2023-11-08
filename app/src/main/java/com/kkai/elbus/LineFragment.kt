@@ -12,9 +12,11 @@ import android.widget.ArrayAdapter
 import android.widget.ListAdapter
 import android.widget.ListView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.kkai.elbus.Utils.CustomPagerAdapter
 
 class LineFragment : Fragment() {
-    private lateinit var listView: ListView
+    private lateinit var lineView: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,35 +29,12 @@ class LineFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        listView = view.findViewById(R.id.blistView)
+        lineView = view.findViewById(R.id.bLineView)
 
         val busList =
             parseBusData() // Implement a function to parse your JSON data into a List<Bus>
         val adapter = BusAdapter(requireContext(), busList)
-        listView.adapter = adapter
+        lineView.adapter = adapter
 
     }
 }
-
-    class BusAdapter(
-        private val context: Context,
-        private val buses: List<busesClass>):
-        ArrayAdapter<busesClass>(context, 0, buses) {
-
-        @SuppressLint("SetTextI18n")
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var view = convertView
-            if (view == null) {
-                view = TextView(context)
-                view.setPadding(16, 16, 16, 16) // Add padding if needed
-                view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
-            }
-
-            val bus = getItem(position)
-            val busNumber = view as TextView
-
-            busNumber.text = "Bus Number: ${bus?.nom_comer}, Color: ${bus?.color_linea}"
-
-            return view
-        }
-    }
