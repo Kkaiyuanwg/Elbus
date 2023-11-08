@@ -84,7 +84,6 @@ suspend fun getLeastTime(stop: String): MutableList<Triple<String, String, Strin
             }
         }
 
-        // Convert the list to an array
         obj = lineasTiemposList
 
     } catch (e: JSONException) {
