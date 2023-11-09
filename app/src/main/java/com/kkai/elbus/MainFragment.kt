@@ -78,7 +78,7 @@ class MainFragment : Fragment() {
         bTextInput = view.findViewById(R.id.bStopInput)
         bCarousel = view.findViewById(R.id.bCarousel)
 
-        println("hi")
+        println("hsi")
         requestLocationPermission()
 
         requestLocationUpdates(requireActivity()) { coor ->
