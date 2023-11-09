@@ -2,23 +2,18 @@ package com.kkai.elbus
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.style.BackgroundColorSpan
-import android.text.style.ForegroundColorSpan
-import android.util.TypedValue
-import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.ListAdapter
 import android.widget.ListView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+
 
 class LineFragment : Fragment() {
     private lateinit var listView: ListView
@@ -59,11 +54,15 @@ class LineFragment : Fragment() {
             val bus = getItem(position)
             val busNumber = view?.findViewById<TextView>(R.id.busNumber)
             val squareText = view?.findViewById<TextView>(R.id.square)
+            val rounded = ContextCompat.getDrawable(context, R.drawable.rounded_bg)
 
             squareText?.text = bus?.nom_comer
-            squareText?.setBackgroundColor(getColorByNom(bus?.nom_comer.toString()))
 
-            busNumber?.text = " LOL"
+            rounded?.colorFilter = PorterDuffColorFilter(getColorByNom(bus?.nom_comer.toString()), PorterDuff.Mode.SRC_IN)
+
+            squareText?.background = rounded
+
+            busNumber?.text = "${bus?.orig_linea}\n${bus?.dest_linea}"
 
             return view!!
         }

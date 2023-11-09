@@ -1,22 +1,20 @@
 package com.kkai.elbus
 
-import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
-
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationView
-import com.kkai.elbus.Utils.CustomPagerAdapter
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import android.Manifest
+import android.app.Activity
+import android.app.AlertDialog
 
 class MainActivity : AppCompatActivity() {
     private lateinit var bMainLabel: TextView
@@ -33,6 +31,7 @@ class MainActivity : AppCompatActivity() {
 
     private var stopTimes: MutableList<Triple<String, String, String>> = mutableListOf(Triple("0", "?", "?"))
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.base)
@@ -43,6 +42,8 @@ class MainActivity : AppCompatActivity() {
 
         val menu = navView.menu // Get the menu of the NavigationView
         menuInflater.inflate(R.layout.drawer_menu, menu)
+
+        requestLocationPermission()
 
         navView.setNavigationItemSelectedListener {
             when (it.itemId) {
@@ -65,8 +66,8 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
         btn_click_me.setOnClickListener{
-            println("pressed")
             mDrawerLayout.openDrawer(findViewById(R.id.nav_view));
         }
 
@@ -76,5 +77,17 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         }
 
+    }
+
+    private fun requestLocationPermission() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Location Services Required")
+        builder.setMessage("Please enable location services to use this feature.")
+        builder.setPositiveButton("hELLO") { _, _ ->
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 123)
+
+        }
+        builder.setNegativeButton("Cancel") { _, _ -> }
+        builder.show()
     }
 }

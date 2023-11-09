@@ -12,7 +12,10 @@ import android.widget.AutoCompleteTextView
 import android.widget.TextView
 import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context.INPUT_METHOD_SERVICE
+import android.content.Intent
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,6 +78,9 @@ class MainFragment : Fragment() {
         bTextInput = view.findViewById(R.id.bStopInput)
         bCarousel = view.findViewById(R.id.bCarousel)
 
+        println("hi")
+        requestLocationPermission()
+
         requestLocationUpdates(requireActivity()) { coor ->
             stopNumber = getClosestLocation(coor)?.id.toString()
         }
@@ -130,6 +136,18 @@ class MainFragment : Fragment() {
             startCountdownTimer(updateDelay, stopNumber)
         }
         bStopLabel.text = "$stopNumber - ${stopName(stopNumber)}"
+    }
+
+    private fun requestLocationPermission() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Location Services Required")
+        builder.setMessage("Please enable location services to use this feature.")
+        builder.setPositiveButton("Go to Settings") { _, _ ->
+            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            startActivity(intent)
+        }
+        builder.setNegativeButton("Cancel") { _, _ -> }
+        builder.show()
     }
 
     private fun startCountdownTimer(millisInFuture: Long, number: String) {

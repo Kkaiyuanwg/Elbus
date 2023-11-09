@@ -112,17 +112,15 @@ fun requestLocationUpdates(thiss: Context, callback: (Pair<Double, Double>?) -> 
         // for ActivityCompat#requestPermissions for more details.
         return
     }
+
     fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             location?.let {
                 coordinates = Pair(location.latitude, location.longitude)
-                println("Latitude: ${coordinates!!.first}, Longitude: ${coordinates!!.second}")
                 callback(coordinates)
             } ?: run {
-                println("Location is null")
                 callback(null)
             }
     }.addOnFailureListener { exception ->
-            println("Location retrieval failed: $exception")
             callback(null)
         }
 }
