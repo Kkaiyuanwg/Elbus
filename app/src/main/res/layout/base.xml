@@ -9,15 +9,13 @@
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clickable="false">
+        android:layout_height="match_parent">
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentContainer"
             android:name="com.kkai.elbus.MainFragment"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:clickable="false" />
+            android:layout_height="0dp" />
 
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/nav_view"

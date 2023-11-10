@@ -13,7 +13,7 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+
 
 class LineFragment : Fragment() {
     private lateinit var listView: ListView
@@ -28,10 +28,7 @@ class LineFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Dialog Title")
-            .setMessage("Dialog Message")
-            .show()
+
         listView = view.findViewById(R.id.blistView)
 
         val busList =
