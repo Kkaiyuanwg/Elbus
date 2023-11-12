@@ -47,7 +47,7 @@ class CustomAutoCompleteTextView(context: Context) : androidx.appcompat.widget.A
 }
 
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(){
     private lateinit var bMainLabel: TextView
     private lateinit var bSubLabel: TextView
     private lateinit var bStopLabel: TextView
@@ -70,6 +70,7 @@ class MainFragment : Fragment() {
         return view
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -78,7 +79,6 @@ class MainFragment : Fragment() {
         bTextInput = view.findViewById(R.id.bStopInput)
         bCarousel = view.findViewById(R.id.bCarousel)
 
-        println("hsi")
         requestLocationPermission()
 
         requestLocationUpdates(requireActivity()) { coor ->
@@ -136,7 +136,9 @@ class MainFragment : Fragment() {
             startCountdownTimer(updateDelay, stopNumber)
         }
         bStopLabel.text = "$stopNumber - ${stopName(stopNumber)}"
+
     }
+
 
     private fun requestLocationPermission() {
         val builder = AlertDialog.Builder(requireContext())

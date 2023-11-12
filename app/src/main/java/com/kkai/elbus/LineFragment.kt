@@ -28,10 +28,6 @@ class LineFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Dialog Title")
-            .setMessage("Dialog Message")
-            .show()
         listView = view.findViewById(R.id.blistView)
 
         val busList =
