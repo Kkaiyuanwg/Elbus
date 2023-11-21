@@ -19,7 +19,7 @@ import com.kkai.elbus.getColorByNom
 class CustomPagerAdapter(
     private val context: Context,
     private val viewPager: ViewPager2,
-    private val pageTitles: MutableList<Triple<String, String, String>>
+    private val pageTitles: MutableList<Pair<String, MutableList<MutableList<String>>>>
 ) : RecyclerView.Adapter<CustomPagerAdapter.PagerViewHolder>() {
 
     private var onItemClickListener: OnItemClickListener? = null
@@ -38,8 +38,19 @@ class CustomPagerAdapter(
     }
 
         override fun onBindViewHolder(holder: PagerViewHolder, position: Int) {
-            holder.textView1.text = pageTitles[position].second
-            holder.textView3.text = pageTitles[position].third
+
+            fun getSecondElement(inputFirst: String, pairs: MutableList<Pair<String, MutableList<MutableList<String>>>>): MutableList<MutableList<String>>? {
+                val matchingPair = pairs.find { it.first == inputFirst }
+                return matchingPair?.second
+            }
+
+            try {
+                holder.textView1.text = pageTitles[position].second[0][1]
+                holder.textView3.text = pageTitles[position].second[1][1]
+            } catch (e:IndexOutOfBoundsException) {
+                holder.textView1.text = "?"
+                holder.textView3.text = "?"
+            }
 
             val linea = pageTitles[position].first
             val text = "Línea  $linea "
@@ -59,7 +70,12 @@ class CustomPagerAdapter(
                 if (linea != "0") {
                     MaterialAlertDialogBuilder(holder.itemView.context)
                         .setTitle("Linea ${linea}")
-                        .setMessage("Dialog Message")
+                        .setMessage(getSecondElement(linea, pageTitles).toString())
+                        .show()
+                } else {
+                    MaterialAlertDialogBuilder(holder.itemView.context)
+                        .setTitle("No hay buses")
+                        .setMessage("Actualmente no hay buses para esta parada")
                         .show()
                 }
                 onItemClickListener?.onItemClick(position)

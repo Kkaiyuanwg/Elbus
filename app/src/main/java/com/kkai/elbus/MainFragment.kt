@@ -19,6 +19,7 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -60,7 +61,7 @@ class MainFragment : Fragment(){
     private var updateDelay: Long = 30 * 1000
     private var countDownTimer: CountDownTimer? = null
 
-    private var stopTimes: MutableList<Triple<String, String, String>> = mutableListOf(Triple("0", "?", "?"))
+    private var stopTimes: MutableList<Pair<String, MutableList<MutableList<String>>>> = mutableListOf(Pair("0", mutableListOf(mutableListOf("?", "?"))))
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,7 +80,6 @@ class MainFragment : Fragment(){
         bTextInput = view.findViewById(R.id.bStopInput)
         bCarousel = view.findViewById(R.id.bCarousel)
 
-        requestLocationPermission()
 
         requestLocationUpdates(requireActivity()) { coor ->
             stopNumber = getClosestLocation(coor)?.id.toString()
@@ -121,6 +121,7 @@ class MainFragment : Fragment(){
                         requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(bTextInput.windowToken, 0)
                     val firstSuggestion = bTextInput.adapter?.getItem(0).toString()
+                    print(firstSuggestion)
                     stopNumber = getFirstNumbers(firstSuggestion).toString()
                     getTime(stopNumber, requireContext())
                     startCountdownTimer(updateDelay, stopNumber)
@@ -134,6 +135,12 @@ class MainFragment : Fragment(){
         if (!isTimerRunning)
         {
             startCountdownTimer(updateDelay, stopNumber)
+        }
+        bTimerLabel.setOnClickListener {
+            println(isTimerRunning)
+            isTimerRunning = false
+            getTime(stopNumber, requireContext())
+            Toast.makeText(context, "Hi", Toast.LENGTH_SHORT)
         }
         bStopLabel.text = "$stopNumber - ${stopName(stopNumber)}"
 

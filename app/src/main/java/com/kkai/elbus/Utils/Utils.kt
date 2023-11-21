@@ -46,12 +46,11 @@ suspend fun apiQuery(url: String): Any? = suspendCoroutine { continuation ->
 }
 
 @OptIn(ExperimentalSerializationApi::class)
-suspend fun getLeastTime(stop: String): MutableList<Triple<String, String, String>>? {
-    var obj: MutableList<Triple<String, String, String>>
+suspend fun getLeastTime(stop: String): MutableList<Pair<String, MutableList<MutableList<String>>>>? {
+    var obj: MutableList<Pair<String, MutableList<MutableList<String>>>>
     try {
         val data = apiQuery("$timeUrl$stop&func=0").toString()
 
-        println(data)
         // Parse the JSON response
         val jsonObject = JSONObject(data)
 
@@ -62,7 +61,10 @@ suspend fun getLeastTime(stop: String): MutableList<Triple<String, String, Strin
         val lineasArray = busesObject.getJSONArray("lineas")
 
         // Initialize an empty list to store lineas and tiempos
-        val lineasTiemposList = mutableListOf<Triple<String, String, String>>()
+        val lineasTiemposList = mutableListOf<Pair<String, MutableList<MutableList<String>>>>()
+
+        val allBus = mutableListOf<MutableList<String>>()
+
 
         // Iterate through the 'lineas' array
         for (i in 0 until lineasArray.length()) {
@@ -72,22 +74,29 @@ suspend fun getLeastTime(stop: String): MutableList<Triple<String, String, Strin
             // Access the 'buses' array for the current linea
             val busesArray = lineaObject.getJSONArray("buses")
 
+            println(lineasArray)
+
             // Check if there are buses for the current linea
             if (busesArray.length() > 0) {
-                val tiempo = busesArray.getJSONObject(0).getString("tiempo")
-                val subtiempo = if (busesArray.length() > 1) {
-                    busesArray.getJSONObject(1).getString("tiempo")
-                } else {
-                    "?"
+                for (ii in 0 until busesArray.length()) {
+                    val eachBus = mutableListOf<String>()
+                    eachBus.add(busesArray.getJSONObject(ii).getString("bus"))
+                    eachBus.add(busesArray.getJSONObject(ii).getString("tiempo"))
+                    eachBus.add(busesArray.getJSONObject(ii).getString("distancia"))
+                    eachBus.add(busesArray.getJSONObject(ii).getString("ult_parada"))
+                    println(eachBus.add(busesArray.getJSONObject(ii).getString("bus")))
+                    allBus.add(eachBus)
+
                 }
-                lineasTiemposList.add(Triple(linea, tiempo, subtiempo))
+                println(allBus)
             }
+            lineasTiemposList.add(Pair(linea, allBus))
         }
 
         obj = lineasTiemposList
 
     } catch (e: JSONException) {
-        obj = mutableListOf(Triple("0", "?", "?"))
+        obj = mutableListOf(Pair("0", mutableListOf(mutableListOf("?"), mutableListOf("?"))))
     }
     return obj
 }
