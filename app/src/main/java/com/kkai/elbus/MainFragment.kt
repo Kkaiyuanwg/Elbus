@@ -19,6 +19,7 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.MultiAutoCompleteTextView
 import android.widget.Toast
 
 import androidx.core.app.ActivityCompat
@@ -60,6 +61,9 @@ class MainFragment : Fragment(){
     private var firstExecution = true
     private var updateDelay: Long = 30 * 1000
     private var countDownTimer: CountDownTimer? = null
+    private var lastClickTime: Long = 0
+
+    private lateinit var iPosition: String
 
     private var stopTimes: MutableList<Pair<String, MutableList<MutableList<String>>>> = mutableListOf(Pair("0", mutableListOf(mutableListOf("?", "?"))))
 
@@ -111,6 +115,11 @@ class MainFragment : Fragment(){
             )
         }
 
+        bTextInput.setOnItemClickListener { parent, _, position, _ ->
+            bTextInput.setText(parent.getItemAtPosition(position).toString())
+            iPosition = parent.getItemAtPosition(position).toString()
+        }
+
         bTextInput.setOnEditorActionListener { _, actionId, event ->
             if ((actionId == EditorInfo.IME_ACTION_DONE) || (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER)) {
                 val suggestions = bTextInput.adapter?.count ?: 0
@@ -120,9 +129,8 @@ class MainFragment : Fragment(){
                     val imm: InputMethodManager =
                         requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(bTextInput.windowToken, 0)
-                    val firstSuggestion = bTextInput.adapter?.getItem(0).toString()
-                    print(firstSuggestion)
-                    stopNumber = getFirstNumbers(firstSuggestion).toString()
+                    val selectedSuggestion = iPosition
+                    stopNumber = getFirstNumbers(selectedSuggestion).toString()
                     getTime(stopNumber, requireContext())
                     startCountdownTimer(updateDelay, stopNumber)
                     bStopLabel.text = "$stopNumber - ${stopName(stopNumber)}"
@@ -137,10 +145,16 @@ class MainFragment : Fragment(){
             startCountdownTimer(updateDelay, stopNumber)
         }
         bTimerLabel.setOnClickListener {
-            println(isTimerRunning)
-            isTimerRunning = false
-            getTime(stopNumber, requireContext())
-            Toast.makeText(context, "Hi", Toast.LENGTH_SHORT)
+            val currentTime = System.currentTimeMillis()
+
+            if (currentTime - lastClickTime >= 2000) {
+                lastClickTime = currentTime
+                println(isTimerRunning)
+                isTimerRunning = false
+                countDownTimer?.cancel()
+                bTimerLabel.text = "Actualizando..."
+                getTime(stopNumber, requireContext())
+            }
         }
         bStopLabel.text = "$stopNumber - ${stopName(stopNumber)}"
 
