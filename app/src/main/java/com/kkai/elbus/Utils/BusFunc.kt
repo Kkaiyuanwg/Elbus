@@ -80,7 +80,8 @@ fun getParadasArray(): Array<String> {
 fun getFirstNumbers(input: String): Int? {
     val regex = """^(\d+)""".toRegex()
     val matchResult = regex.find(input)
-    return matchResult?.groupValues?.get(1)?.toIntOrNull()
+    val r = matchResult?.groupValues?.get(1)?.toIntOrNull()
+    return r ?: 0
 }
 
 fun getClosestLocation(userLatLong: Pair<Double, Double>?): stopsClass? {

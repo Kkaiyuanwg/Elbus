@@ -19,6 +19,8 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.MultiAutoCompleteTextView
+import android.widget.Toast
 
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -47,7 +49,7 @@ class CustomAutoCompleteTextView(context: Context) : androidx.appcompat.widget.A
 }
 
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(){
     private lateinit var bMainLabel: TextView
     private lateinit var bSubLabel: TextView
     private lateinit var bStopLabel: TextView
@@ -59,8 +61,11 @@ class MainFragment : Fragment() {
     private var firstExecution = true
     private var updateDelay: Long = 30 * 1000
     private var countDownTimer: CountDownTimer? = null
+    private var lastClickTime: Long = 0
 
-    private var stopTimes: MutableList<Triple<String, String, String>> = mutableListOf(Triple("0", "?", "?"))
+    private lateinit var iPosition: String
+
+    private var stopTimes: MutableList<Pair<String, MutableList<MutableList<String>>>> = mutableListOf(Pair("0", mutableListOf(mutableListOf("?", "?"))))
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,6 +75,7 @@ class MainFragment : Fragment() {
         return view
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -78,8 +84,6 @@ class MainFragment : Fragment() {
         bTextInput = view.findViewById(R.id.bStopInput)
         bCarousel = view.findViewById(R.id.bCarousel)
 
-        println("hsi")
-        requestLocationPermission()
 
         requestLocationUpdates(requireActivity()) { coor ->
             stopNumber = getClosestLocation(coor)?.id.toString()
@@ -111,6 +115,11 @@ class MainFragment : Fragment() {
             )
         }
 
+        bTextInput.setOnItemClickListener { parent, _, position, _ ->
+            bTextInput.setText(parent.getItemAtPosition(position).toString())
+            iPosition = parent.getItemAtPosition(position).toString()
+        }
+
         bTextInput.setOnEditorActionListener { _, actionId, event ->
             if ((actionId == EditorInfo.IME_ACTION_DONE) || (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER)) {
                 val suggestions = bTextInput.adapter?.count ?: 0
@@ -120,8 +129,8 @@ class MainFragment : Fragment() {
                     val imm: InputMethodManager =
                         requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(bTextInput.windowToken, 0)
-                    val firstSuggestion = bTextInput.adapter?.getItem(0).toString()
-                    stopNumber = getFirstNumbers(firstSuggestion).toString()
+                    val selectedSuggestion = iPosition
+                    stopNumber = getFirstNumbers(selectedSuggestion).toString()
                     getTime(stopNumber, requireContext())
                     startCountdownTimer(updateDelay, stopNumber)
                     bStopLabel.text = "$stopNumber - ${stopName(stopNumber)}"
@@ -135,8 +144,22 @@ class MainFragment : Fragment() {
         {
             startCountdownTimer(updateDelay, stopNumber)
         }
+        bTimerLabel.setOnClickListener {
+            val currentTime = System.currentTimeMillis()
+
+            if (currentTime - lastClickTime >= 2000) {
+                lastClickTime = currentTime
+                println(isTimerRunning)
+                isTimerRunning = false
+                countDownTimer?.cancel()
+                bTimerLabel.text = "Actualizando..."
+                getTime(stopNumber, requireContext())
+            }
+        }
         bStopLabel.text = "$stopNumber - ${stopName(stopNumber)}"
+
     }
+
 
     private fun requestLocationPermission() {
         val builder = AlertDialog.Builder(requireContext())

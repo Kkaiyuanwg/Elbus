@@ -43,8 +43,6 @@ class MainActivity : AppCompatActivity() {
         val menu = navView.menu // Get the menu of the NavigationView
         menuInflater.inflate(R.layout.drawer_menu, menu)
 
-        requestLocationPermission()
-
         navView.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.nav_item1 -> {
@@ -77,17 +75,5 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         }
 
-    }
-
-    private fun requestLocationPermission() {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Location Services Required")
-        builder.setMessage("Please enable location services to use this feature.")
-        builder.setPositiveButton("hELLO") { _, _ ->
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 123)
-
-        }
-        builder.setNegativeButton("Cancel") { _, _ -> }
-        builder.show()
     }
 }

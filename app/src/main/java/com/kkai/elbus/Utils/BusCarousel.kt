@@ -12,14 +12,20 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kkai.elbus.R
 import com.kkai.elbus.getColorByNom
 
 class CustomPagerAdapter(
     private val context: Context,
     private val viewPager: ViewPager2,
-    private val pageTitles: MutableList<Triple<String, String, String>>
+    private val pageTitles: MutableList<Pair<String, MutableList<MutableList<String>>>>
 ) : RecyclerView.Adapter<CustomPagerAdapter.PagerViewHolder>() {
+
+    private var onItemClickListener: OnItemClickListener? = null
+    interface OnItemClickListener {
+        fun onItemClick(position: Int)
+    }
 
     inner class PagerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textView1: TextView = itemView.findViewById(R.id.bMainLabel)
@@ -31,28 +37,57 @@ class CustomPagerAdapter(
         return PagerViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: PagerViewHolder, position: Int) {
-        holder.textView1.text = pageTitles[position].second
-        holder.textView3.text = pageTitles[position].third
+        override fun onBindViewHolder(holder: PagerViewHolder, position: Int) {
 
-        val linea = pageTitles[position].first
-        val text = "Línea  $linea "
-        val spannableString = SpannableString(text)
+            fun getSecondElement(inputFirst: String, pairs: MutableList<Pair<String, MutableList<MutableList<String>>>>): MutableList<MutableList<String>>? {
+                val matchingPair = pairs.find { it.first == inputFirst }
+                return matchingPair?.second
+            }
 
-        val endIndex = text.length
+            try {
+                holder.textView1.text = pageTitles[position].second[0][1]
+                holder.textView3.text = pageTitles[position].second[1][1]
+            } catch (e:IndexOutOfBoundsException) {
+                holder.textView1.text = "?"
+                holder.textView3.text = "?"
+            }
 
-        val backgroundColorSpan = BackgroundColorSpan(getColorByNom(linea))
-        val textColorSpan = ForegroundColorSpan(Color.WHITE)
+            val linea = pageTitles[position].first
+            val text = "Línea  $linea "
+            val spannableString = SpannableString(text)
 
-        spannableString.setSpan(backgroundColorSpan, 6, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spannableString.setSpan(textColorSpan, 6, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            val endIndex = text.length
 
-        holder.textView2.text = spannableString
-    }
+            val backgroundColorSpan = BackgroundColorSpan(getColorByNom(linea))
+            val textColorSpan = ForegroundColorSpan(Color.WHITE)
+
+            spannableString.setSpan(backgroundColorSpan, 6, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannableString.setSpan(textColorSpan, 6, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+            holder.textView2.text = spannableString
+            holder.itemView.setOnClickListener {
+                println("this is ${linea}")
+                if (linea != "0") {
+                    MaterialAlertDialogBuilder(holder.itemView.context)
+                        .setTitle("Linea ${linea}")
+                        .setMessage(getSecondElement(linea, pageTitles).toString())
+                        .show()
+                } else {
+                    MaterialAlertDialogBuilder(holder.itemView.context)
+                        .setTitle("No hay buses")
+                        .setMessage("Actualmente no hay buses para esta parada")
+                        .show()
+                }
+                onItemClickListener?.onItemClick(position)
+            }
+        }
 
     override fun getItemCount(): Int = pageTitles.size
 
     fun setCurrentItem(position: Int) {
         viewPager.currentItem = position
+    }
+    fun setOnItemClickListener(listener: OnItemClickListener?) {
+        this.onItemClickListener = listener
     }
 }
