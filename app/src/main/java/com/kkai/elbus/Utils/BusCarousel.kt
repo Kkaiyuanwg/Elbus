@@ -40,6 +40,7 @@ class CustomPagerAdapter(
         override fun onBindViewHolder(holder: PagerViewHolder, position: Int) {
 
             fun getSecondElement(inputFirst: String, pairs: MutableList<Pair<String, MutableList<MutableList<String>>>>): MutableList<MutableList<String>>? {
+                println(pairs)
                 val matchingPair = pairs.find { it.first == inputFirst }
                 return matchingPair?.second
             }
@@ -66,11 +67,11 @@ class CustomPagerAdapter(
 
             holder.textView2.text = spannableString
             holder.itemView.setOnClickListener {
-                println("this is ${linea}")
                 if (linea != "0") {
+                    val buses = getSecondElement(linea, pageTitles).toString()
                     MaterialAlertDialogBuilder(holder.itemView.context)
                         .setTitle("Linea ${linea}")
-                        .setMessage(getSecondElement(linea, pageTitles).toString())
+                        .setMessage(buses)
                         .show()
                 } else {
                     MaterialAlertDialogBuilder(holder.itemView.context)

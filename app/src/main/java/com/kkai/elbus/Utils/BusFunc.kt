@@ -129,8 +129,6 @@ fun parseBusData(): List<busesClass> {
             val bus = busesClass(id, nomComer, colorLinea, origLinea, destLinea, destIda, destVuelta)
             buseria.add(bus)
         }
-
-        println(buseria)
     } catch (e: JSONException) {
         e.printStackTrace()
     }

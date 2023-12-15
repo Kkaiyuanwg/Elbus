@@ -63,32 +63,27 @@ suspend fun getLeastTime(stop: String): MutableList<Pair<String, MutableList<Mut
         // Initialize an empty list to store lineas and tiempos
         val lineasTiemposList = mutableListOf<Pair<String, MutableList<MutableList<String>>>>()
 
-        val allBus = mutableListOf<MutableList<String>>()
-
-
         // Iterate through the 'lineas' array
         for (i in 0 until lineasArray.length()) {
+            val allBus = mutableListOf<MutableList<String>>()
             val lineaObject = lineasArray.getJSONObject(i)
             val linea = getNomComerById(lineaObject.getString("linea")).toString()
 
             // Access the 'buses' array for the current linea
             val busesArray = lineaObject.getJSONArray("buses")
 
-            println(lineasArray)
-
             // Check if there are buses for the current linea
             if (busesArray.length() > 0) {
                 for (ii in 0 until busesArray.length()) {
+                    println(ii)
                     val eachBus = mutableListOf<String>()
                     eachBus.add(busesArray.getJSONObject(ii).getString("bus"))
                     eachBus.add(busesArray.getJSONObject(ii).getString("tiempo"))
                     eachBus.add(busesArray.getJSONObject(ii).getString("distancia"))
                     eachBus.add(busesArray.getJSONObject(ii).getString("ult_parada"))
-                    println(eachBus.add(busesArray.getJSONObject(ii).getString("bus")))
                     allBus.add(eachBus)
 
                 }
-                println(allBus)
             }
             lineasTiemposList.add(Pair(linea, allBus))
         }

@@ -172,7 +172,7 @@ class MainFragment : Fragment(){
         builder.setNegativeButton("Cancel") { _, _ -> }
         builder.show()
     }
-
+    
     private fun startCountdownTimer(millisInFuture: Long, number: String) {
         if (!isTimerRunning && isAdded) {
             countDownTimer = object : CountDownTimer(millisInFuture, 1000) {

@@ -30,8 +30,7 @@ class LineFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         listView = view.findViewById(R.id.blistView)
 
-        val busList =
-            parseBusData() // Implement a function to parse your JSON data into a List<Bus>
+        val busList = parseBusData()
         val adapter = BusAdapter(requireContext(), busList)
         listView.adapter = adapter
 
