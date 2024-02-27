@@ -135,5 +135,3 @@ fun parseBusData(): List<busesClass> {
 
     return buseria
 }
-
-

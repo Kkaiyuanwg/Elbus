@@ -100,15 +100,17 @@ class MainFragment : Fragment(){
         bTextInput.setAdapter(aAdapter)
         bTextInput.threshold = 1
 
-        if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED)
-        {
+        if (ContextCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             requestLocationUpdates(requireActivity()) { coor ->
                 stopNumber = getClosestLocation(coor)?.id.toString()
                 startCountdownTimer(updateDelay, stopNumber)
                 bStopLabel.text = "$stopNumber - ${stopName(stopNumber)}"
             }
-        } else
-        {
+        } else {
             ActivityCompat.requestPermissions(
                 requireActivity() as Activity,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 123
@@ -140,8 +142,7 @@ class MainFragment : Fragment(){
             false
         }
 
-        if (!isTimerRunning)
-        {
+        if (!isTimerRunning) {
             startCountdownTimer(updateDelay, stopNumber)
         }
         bTimerLabel.setOnClickListener {
@@ -160,8 +161,7 @@ class MainFragment : Fragment(){
 
     }
 
-
-    private fun requestLocationPermission() {
+    private fun requestLocationPermission()     {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Location Services Required")
         builder.setMessage("Please enable location services to use this feature.")
@@ -202,6 +202,7 @@ class MainFragment : Fragment(){
             if (least != null) {
                 stopTimes = least
             }
+
             val pAdapter = CustomPagerAdapter(context, bCarousel, stopTimes)
             bCarousel.adapter = pAdapter
 

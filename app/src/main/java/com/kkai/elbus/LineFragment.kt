@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.kkai.elbus.Utils.createDiagText
 
 class LineFragment : Fragment() {
     private lateinit var listView: ListView
@@ -42,26 +43,37 @@ class LineFragment : Fragment() {
         private val buses: List<busesClass>):
         ArrayAdapter<busesClass>(context, 0, buses) {
 
-        @SuppressLint("SetTextI18n")
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var view = convertView
-            if (view == null) {
-                view = LayoutInflater.from(context).inflate(R.layout.line_item, parent, false)
+            @SuppressLint("SetTextI18n")
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                var view = convertView
+                if (view == null) {
+                    view = LayoutInflater.from(context).inflate(R.layout.line_item, parent, false)
+                }
+
+                val bus = getItem(position)
+                val busNumber = view?.findViewById<TextView>(R.id.busNumber)
+                val squareText = view?.findViewById<TextView>(R.id.square)
+                val rounded = ContextCompat.getDrawable(context, R.drawable.rounded_bg)
+
+                squareText?.text = bus?.nom_comer
+
+                rounded?.colorFilter = PorterDuffColorFilter(
+                    getColorByNom(bus?.nom_comer.toString()),
+                    PorterDuff.Mode.SRC_IN
+                )
+
+                squareText?.background = rounded
+
+                busNumber?.text = "${bus?.orig_linea}\n${bus?.dest_linea}"
+
+                view?.setOnClickListener {
+                    val title = squareText?.text?.toString() ?: ""
+                    MaterialAlertDialogBuilder(context)
+                        .setTitle(title)
+                        .setMessage("Hola esto no hace nada aun")
+                        .show()
+                }
+
+                return view!!
             }
-
-            val bus = getItem(position)
-            val busNumber = view?.findViewById<TextView>(R.id.busNumber)
-            val squareText = view?.findViewById<TextView>(R.id.square)
-            val rounded = ContextCompat.getDrawable(context, R.drawable.rounded_bg)
-
-            squareText?.text = bus?.nom_comer
-
-            rounded?.colorFilter = PorterDuffColorFilter(getColorByNom(bus?.nom_comer.toString()), PorterDuff.Mode.SRC_IN)
-
-            squareText?.background = rounded
-
-            busNumber?.text = "${bus?.orig_linea}\n${bus?.dest_linea}"
-
-            return view!!
         }
-    }
