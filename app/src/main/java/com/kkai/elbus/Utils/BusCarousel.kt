@@ -68,10 +68,11 @@ class CustomPagerAdapter(
             holder.textView2.text = spannableString
             holder.itemView.setOnClickListener {
                 if (linea != "0") {
-                    val buses = getSecondElement(linea, pageTitles).toString()
+                    val buses = getSecondElement(linea, pageTitles)
+                    val busDialog = createDiagText(buses)
                     MaterialAlertDialogBuilder(holder.itemView.context)
                         .setTitle("Linea ${linea}")
-                        .setMessage(buses)
+                        .setMessage(busDialog)
                         .show()
                 } else {
                     MaterialAlertDialogBuilder(holder.itemView.context)

@@ -7,8 +7,11 @@ import android.location.Location
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.kkai.elbus.client
 import com.kkai.elbus.getNomComerById
+import com.kkai.elbus.gson
 import com.kkai.elbus.timeUrl
 import kotlinx.serialization.ExperimentalSerializationApi
 import okhttp3.Call
@@ -22,6 +25,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.math.*
 
+val gson = Gson()
 suspend fun apiQuery(url: String): Any? = suspendCoroutine { continuation ->
     val request = Request.Builder()
         .url(url)
@@ -94,6 +98,25 @@ suspend fun getLeastTime(stop: String): MutableList<Pair<String, MutableList<Mut
         obj = mutableListOf(Pair("0", mutableListOf(mutableListOf("?"), mutableListOf("?"))))
     }
     return obj
+}
+
+fun createDiagText(buses: MutableList<MutableList<String>>?): String {
+    var fulltext = ""
+    try {
+        println(buses)
+
+        if (buses != null) {
+            for (i in 0 until buses.size) {
+                val bus: MutableList<String> = buses[i]
+                val textline = "Bus ${bus[0]}: ${bus[1]}min. (${bus[2]}m)"
+                fulltext += "${textline}\n"
+            }
+        }
+    } catch (e: JSONException) {
+        e.printStackTrace()
+    }
+
+    return fulltext.toString()
 }
 
 fun requestLocationUpdates(thiss: Context, callback: (Pair<Double, Double>?) -> Unit) {
