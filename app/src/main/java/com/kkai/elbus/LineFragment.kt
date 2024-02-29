@@ -70,7 +70,7 @@ class LineFragment : Fragment() {
                     val title = squareText?.text?.toString() ?: ""
                     MaterialAlertDialogBuilder(context)
                         .setTitle(title)
-                        .setMessage("Hola esto no hace nada aun")
+                        .setMessage("Próximamente")
                         .show()
                 }
 

@@ -14,4 +14,8 @@
         android:id="@+id/nav_item2"
         android:title="Líneas"
         android:icon="@drawable/route_icon" />
+    <item
+        android:id="@+id/nav_item3"
+        android:title="Ajustes"
+        android:icon="@drawable/settings_icon" />
 </menu>

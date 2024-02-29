@@ -58,6 +58,13 @@ class MainActivity : AppCompatActivity() {
                     mDrawerLayout.closeDrawer(findViewById(R.id.nav_view))
                     true
                 }
+                R.id.nav_item3 -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, ConfFragment())
+                        .commit()
+                    mDrawerLayout.closeDrawer(findViewById(R.id.nav_view))
+                    true
+                }
                 // Add more cases as needed
 
                 else -> false
