@@ -35,7 +35,7 @@
                 android:alpha="0.7"
                 android:fontFamily="@font/roboto"
                 android:gravity="bottom"
-                android:text="El bus - v0.4"
+                android:text="El bus - v0.4.1"
                 android:textAlignment="center" />
         </com.google.android.material.navigation.NavigationView>
 
