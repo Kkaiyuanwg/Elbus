@@ -13,8 +13,6 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.kkai.elbus.Utils.createDiagText
 
 class LineFragment : Fragment() {
     private lateinit var listView: ListView
@@ -22,9 +20,8 @@ class LineFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_line, container, false)
-        return view
+    ): View {
+        return inflater.inflate(R.layout.fragment_line, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,11 +64,7 @@ class LineFragment : Fragment() {
                 busNumber?.text = "${bus?.orig_linea}\n${bus?.dest_linea}"
 
                 view?.setOnClickListener {
-                    val title = squareText?.text?.toString() ?: ""
-                    MaterialAlertDialogBuilder(context)
-                        .setTitle(title)
-                        .setMessage("Próximamente")
-                        .show()
+                    view = LayoutInflater.from(context).inflate(R.layout.line_item_detail, parent, false)
                 }
 
                 return view!!

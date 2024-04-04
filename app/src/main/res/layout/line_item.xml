@@ -20,7 +20,8 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" /> <!-- Example color (Orange) -->
+        app:layout_constraintTop_toTopOf="parent"
+        android:transitionName="avatar"/> <!-- Example color (Orange) -->
 
     <!-- Text to the Right of the Square -->
 
