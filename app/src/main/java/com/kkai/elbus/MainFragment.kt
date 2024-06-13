@@ -63,7 +63,7 @@ class MainFragment : Fragment(){
     private var countDownTimer: CountDownTimer? = null
     private var lastClickTime: Long = 0
 
-    private lateinit var iPosition: String
+    private var iPosition: String = ""
 
     private var stopTimes: MutableList<Pair<String, MutableList<MutableList<String>>>> = mutableListOf(Pair("0", mutableListOf(mutableListOf("?", "?"))))
 
@@ -131,7 +131,11 @@ class MainFragment : Fragment(){
                     val imm: InputMethodManager =
                         requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(bTextInput.windowToken, 0)
-                    val selectedSuggestion = iPosition
+                    val selectedSuggestion = if (iPosition == "") {
+                        bTextInput.adapter?.getItem(0).toString()
+                    } else {
+                        iPosition
+                    }
                     stopNumber = getFirstNumbers(selectedSuggestion).toString()
                     getTime(stopNumber, requireContext())
                     startCountdownTimer(updateDelay, stopNumber)
