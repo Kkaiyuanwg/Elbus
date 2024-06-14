@@ -13,6 +13,7 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 
 class LineFragment : Fragment() {
     private lateinit var listView: ListView
@@ -32,6 +33,23 @@ class LineFragment : Fragment() {
         val adapter = BusAdapter(requireContext(), busList)
         listView.adapter = adapter
 
+        listView.setOnItemClickListener { parent, view, position, id ->
+            // Get the clicked item
+            val bus = adapter.getItem(position)
+
+            // Create a new fragment and pass the clicked item data to it
+            val detailFragment = DetailFragment().apply {
+                arguments = Bundle().apply {
+                    putSerializable("bus", bus)
+                }
+            }
+
+            // Replace the current fragment with the new one
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.LineFragment, detailFragment)
+                .addToBackStack(null)
+                .commit()
+        }
     }
 }
 
@@ -64,7 +82,20 @@ class LineFragment : Fragment() {
                 busNumber?.text = "${bus?.orig_linea}\n${bus?.dest_linea}"
 
                 view?.setOnClickListener {
-                    view = LayoutInflater.from(context).inflate(R.layout.line_item_detail, parent, false)
+                    val busi = getItem(position)
+
+                    // Create a new fragment and pass the clicked item data to it
+                    val detailFragment = DetailFragment().apply {
+                        arguments = Bundle().apply {
+                            putSerializable("bus", busi)
+                        }
+                    }
+
+                    // Replace the current fragment with the new one
+                    (context as FragmentActivity).supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, detailFragment)
+                        .addToBackStack(null)
+                        .commit()
                 }
 
                 return view!!

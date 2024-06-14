@@ -15,6 +15,10 @@ import com.google.android.material.navigation.NavigationView
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.UiModeManager
+import android.content.Context
+import android.content.res.Configuration
+import androidx.appcompat.app.AppCompatDelegate
 
 class MainActivity : AppCompatActivity() {
     private lateinit var bMainLabel: TextView
@@ -38,6 +42,29 @@ class MainActivity : AppCompatActivity() {
         val btn_click_me = findViewById(R.id.button) as Button
         val mDrawerLayout = findViewById(R.id.drawer_layout) as DrawerLayout
         val navView: NavigationView = findViewById(R.id.nav_view)
+        val sharedPref = getPreferences(Context.MODE_PRIVATE)
+        val isDarkMode = sharedPref.getBoolean("isDarkMode", false)
+
+        val uiModeManager = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+        when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                if (isDarkMode) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                if (isDarkMode) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            }
+        }
 
         val menu = navView.menu // Get the menu of the NavigationView
         menuInflater.inflate(R.layout.drawer_menu, menu)
