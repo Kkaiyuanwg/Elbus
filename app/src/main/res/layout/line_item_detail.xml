@@ -2,25 +2,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:backgroundTint="@color/m3_icon_button_icon_color_selector"
+    android:backgroundTintMode="screen"
     android:orientation="horizontal">
 
-    <!-- Colored Square Section -->
-
-    <Button
-        android:id="@+id/closelinebutton"
-        style="@style/Widget.Material3.Button.IconButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:icon="@drawable/round_close_24"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="50dp"
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="28dp"
+        android:layout_height="35dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -28,50 +18,39 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
-        <TextView
-            android:id="@+id/square"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/rounded_bg"
-            android:gravity="center"
-            android:text="1"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:transitionName="avatar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <Button
-            android:id="@+id/lineFavButton"
+            android:id="@+id/button3"
             style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:icon="@drawable/round_star"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/square"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="35dp"
+            android:clickable="false"
+            android:paddingLeft="0dp"
+            android:paddingTop="0dp"
+            android:paddingRight="0dp"
+            android:paddingBottom="-10dp"
+            android:textSize="16sp"
+            app:icon="@drawable/baseline_circle_24" />
 
-        <FrameLayout
-            android:id="@+id/frameLayout"
-            android:layout_width="match_parent"
+        <View
+            android:layout_width="4dp"
             android:layout_height="match_parent"
-            android:layout_marginTop="64dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/square"/>
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="12dp"
+            android:background="?attr/colorPrimary"
+            android:backgroundTint="@color/design_default_color_background"
+            android:backgroundTintMode="multiply" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
 
-    <!-- Example color (Orange) -->
-
-    <!-- Text to the Right of the Square -->
-
-    <!-- Example color (Black) -->
+    <TextView
+        android:id="@+id/busStop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textAlignment="textStart"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/relativeLayout"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
