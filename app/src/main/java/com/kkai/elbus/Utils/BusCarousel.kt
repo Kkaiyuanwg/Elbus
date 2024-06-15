@@ -28,9 +28,10 @@ class CustomPagerAdapter(
     }
 
     inner class PagerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textView1: TextView = itemView.findViewById(R.id.bMainLabel)
-        val textView2: TextView = itemView.findViewById(R.id.bSubLabel)
-        val textView3: TextView = itemView.findViewById(R.id.bMainSubLabel)
+        val mainText: TextView = itemView.findViewById(R.id.bMainLabel)
+        val subText: TextView = itemView.findViewById(R.id.bSubLabel)
+        val mainsubText: TextView = itemView.findViewById(R.id.bMainSubLabel)
+        val sigText: TextView = itemView.findViewById(R.id.textView)
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PagerViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.what_bus, parent, false)
@@ -46,14 +47,16 @@ class CustomPagerAdapter(
             }
 
             try {
-                holder.textView1.text = pageTitles[position].second[0][1]
+                holder.mainText.text = pageTitles[position].second[0][1]
                 try {
-                    holder.textView3.text = pageTitles[position].second[1][1]
+                    holder.mainsubText.text = pageTitles[position].second[1][1]
                 } catch (e: IndexOutOfBoundsException) {
-                    holder.textView3.text = "?"
+                    holder.mainsubText.text = "?"
+                    holder.sigText.visibility = View.GONE
+                    holder.mainsubText.visibility = View.GONE
                 }
             } catch (e: IndexOutOfBoundsException) {
-                holder.textView1.text = "?"
+                holder.mainText.text = "?"
             }
 
             val linea = pageTitles[position].first
@@ -68,7 +71,7 @@ class CustomPagerAdapter(
             spannableString.setSpan(backgroundColorSpan, 6, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             spannableString.setSpan(textColorSpan, 6, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-            holder.textView2.text = spannableString
+            holder.subText.text = spannableString
             holder.itemView.setOnClickListener {
                 if (linea != "0") {
                     val buses = getSecondElement(linea, pageTitles)
