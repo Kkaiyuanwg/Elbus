@@ -47,10 +47,13 @@ class CustomPagerAdapter(
 
             try {
                 holder.textView1.text = pageTitles[position].second[0][1]
-                holder.textView3.text = pageTitles[position].second[1][1]
-            } catch (e:IndexOutOfBoundsException) {
+                try {
+                    holder.textView3.text = pageTitles[position].second[1][1]
+                } catch (e: IndexOutOfBoundsException) {
+                    holder.textView3.text = "?"
+                }
+            } catch (e: IndexOutOfBoundsException) {
                 holder.textView1.text = "?"
-                holder.textView3.text = "?"
             }
 
             val linea = pageTitles[position].first
