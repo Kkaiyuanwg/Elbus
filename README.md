@@ -1,3 +1,7 @@
+# Archived until I get and android phone
+
+---
+
 # Elbus
 [![Release](https://img.shields.io/github/v/release/Kkaiyuanwg/Elbus)](https://github.com/Kkaiyuanwg/Elbus/releases)
 [![License](https://img.shields.io/badge/license-Apache_License_2.0-orange.svg)](https://opensource.org/licenses/MIT)
