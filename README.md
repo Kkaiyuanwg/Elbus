@@ -1,6 +1,4 @@
-# Archived until I get and android phone
-
----
+# Archived until I get an android phone
 
 # Elbus
 [![Release](https://img.shields.io/github/v/release/Kkaiyuanwg/Elbus)](https://github.com/Kkaiyuanwg/Elbus/releases)
